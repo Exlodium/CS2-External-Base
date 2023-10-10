@@ -3,12 +3,12 @@ A simple free to use CS2 external cheat base
 
 # About
 This is my first public project, I've decided to share a stripped down version of my external cheat as a learning example for other people interested in making CS2 cheats.
-From my limited play testing the cheat does not seem to get you banned, however I can not garuantee safety ( use at your own risk ).
-I've based this cheat on the priciple of **READ ONLY** in an attempt to stay clear of bans
+  From my limited play testing the cheat does not seem to get you banned, however I can not garuantee safety ( use at your own risk ).
+  I've based this cheat on the priciple of **READ ONLY** in an attempt to stay clear of bans
 
 # How to use
 Simply compile the project in Release x64, it should compile a DLL file which you can inject into any x64 process :)
-Make sure you don't inject the DLL into CS2, inject it into some other x64 process
+  Make sure you don't inject the DLL into CS2, inject it into some other x64 process
 
 # Features
 **ESP**
@@ -35,8 +35,8 @@ Make sure you don't inject the DLL into CS2, inject it into some other x64 proce
 
 # Assets
 [Dear ImGui](https://github.com/ocornut/imgui)
-[FreeType](https://github.com/ocornut/imgui/tree/master/misc/freetype)
+  [FreeType](https://github.com/ocornut/imgui/tree/master/misc/freetype)
 
 # Contacts
 Discord: Exlodium
-Snapchat: Exlodium
+  Snapchat: Exlodium
