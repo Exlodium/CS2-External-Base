@@ -1,8 +1,5 @@
 #pragma once
 // include EVERYTHING here
-#define WIN32_LEAN_AND_MEAN
-#define _WIN32_WINNT 0x0500
-
 // standard includes
 #include <Windows.h>
 #include <dwmapi.h>
@@ -82,3 +79,5 @@
 // gui
 #include "gui/Gui.h"
 #include "gui/Window.h"
+
+#define WIN32_LEAN_AND_MEAN
