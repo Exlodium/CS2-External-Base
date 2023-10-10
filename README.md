@@ -8,6 +8,7 @@ I've based this cheat on the priciple of **READ ONLY** in an attempt to stay cle
 
 # How to use
 Simply compile the project in Release x64, it should compile a DLL file which you can inject into any x64 process :)
+Make sure you don't inject the DLL into CS2, inject it into some other x64 process
 
 # Features
 **ESP**
