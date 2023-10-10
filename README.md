@@ -30,8 +30,8 @@ I've based this cheat on the priciple of **READ ONLY** in an attempt to stay cle
 - N/A ( might come in the future )
 
 # Assets
-[Dear ImGui](https://github.com/ocornut/imgui).
-[GitHub Pages](https://github.com/ocornut/imgui/tree/master/misc/freetype).
+[Dear ImGui](https://github.com/ocornut/imgui)
+[FreeType](https://github.com/ocornut/imgui/tree/master/misc/freetype)
 
 # Contacts
 Discord: Exlodium
