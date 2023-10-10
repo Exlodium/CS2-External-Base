@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.props')" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{c1c47dd6-0dc8-43b7-bf90-f4fc02fcfa2e}</ProjectGuid>
+    <RootNamespace>External Base</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>External Base</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)</OutDir>
+    <IncludePath>ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>ext\freetype\win64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)</OutDir>
+    <IncludePath>ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>ext\freetype\win64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;_WINDOWS;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;NOMINMAX;_WINDOWS;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="ext\freetype\include\freetype\config\ftconfig.h" />
+    <ClInclude Include="ext\freetype\include\freetype\config\ftheader.h" />
+    <ClInclude Include="ext\freetype\include\freetype\config\ftmodule.h" />
+    <ClInclude Include="ext\freetype\include\freetype\config\ftoption.h" />
+    <ClInclude Include="ext\freetype\include\freetype\config\ftstdlib.h" />
+    <ClInclude Include="ext\freetype\include\freetype\config\integer-types.h" />
+    <ClInclude Include="ext\freetype\include\freetype\config\mac-support.h" />
+    <ClInclude Include="ext\freetype\include\freetype\config\public-macros.h" />
+    <ClInclude Include="ext\freetype\include\freetype\freetype.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftadvanc.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftbbox.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftbdf.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftbitmap.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftbzip2.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftcache.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftchapters.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftcid.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftcolor.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftdriver.h" />
+    <ClInclude Include="ext\freetype\include\freetype\fterrdef.h" />
+    <ClInclude Include="ext\freetype\include\freetype\fterrors.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftfntfmt.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftgasp.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftglyph.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftgxval.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftgzip.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftimage.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftincrem.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftlcdfil.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftlist.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftlogging.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftlzw.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftmac.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftmm.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftmodapi.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftmoderr.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftotval.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftoutln.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftparams.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftpfr.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftrender.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftsizes.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftsnames.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftstroke.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftsynth.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftsystem.h" />
+    <ClInclude Include="ext\freetype\include\freetype\fttrigon.h" />
+    <ClInclude Include="ext\freetype\include\freetype\fttypes.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ftwinfnt.h" />
+    <ClInclude Include="ext\freetype\include\freetype\otsvg.h" />
+    <ClInclude Include="ext\freetype\include\freetype\t1tables.h" />
+    <ClInclude Include="ext\freetype\include\freetype\ttnameid.h" />
+    <ClInclude Include="ext\freetype\include\freetype\tttables.h" />
+    <ClInclude Include="ext\freetype\include\freetype\tttags.h" />
+    <ClInclude Include="ext\freetype\include\ft2build.h" />
+    <ClInclude Include="ext\imgui\imconfig.h" />
+    <ClInclude Include="ext\imgui\imgui.h" />
+    <ClInclude Include="ext\imgui\imgui_freetype.h" />
+    <ClInclude Include="ext\imgui\imgui_internal.h" />
+    <ClInclude Include="ext\imgui\impl\imgui_impl_dx11.h" />
+    <ClInclude Include="ext\imgui\impl\imgui_impl_win32.h" />
+    <ClInclude Include="ext\imgui\imstb_rectpack.h" />
+    <ClInclude Include="ext\imgui\imstb_textedit.h" />
+    <ClInclude Include="ext\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\config\Variables.h" />
+    <ClInclude Include="src\features\aimbot\Aimbot.h" />
+    <ClInclude Include="src\features\aimbot\Triggerbot.h" />
+    <ClInclude Include="src\features\visuals\PlayerESP.h" />
+    <ClInclude Include="src\Globals.h" />
+    <ClInclude Include="src\gui\Window.h" />
+    <ClInclude Include="src\memory\crypt\XorStr.h" />
+    <ClInclude Include="src\memory\datatypes\Color.h" />
+    <ClInclude Include="src\memory\datatypes\CUtlMemory.h" />
+    <ClInclude Include="src\memory\datatypes\CUtlVector.h" />
+    <ClInclude Include="src\memory\datatypes\Matrix.h" />
+    <ClInclude Include="src\memory\datatypes\QAngle.h" />
+    <ClInclude Include="src\memory\datatypes\Vector.h" />
+    <ClInclude Include="src\memory\Memory.h" />
+    <ClInclude Include="src\Precompiled.h" />
+    <ClInclude Include="src\utilities\Draw.h" />
+    <ClInclude Include="src\utilities\InputSytem.h" />
+    <ClInclude Include="src\utilities\Logging.h" />
+    <ClInclude Include="src\utilities\Math.h" />
+    <ClInclude Include="src\valve\Entity.h" />
+    <ClInclude Include="src\valve\Offsets.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ext\imgui\imgui.cpp" />
+    <ClCompile Include="ext\imgui\imgui_draw.cpp" />
+    <ClCompile Include="ext\imgui\imgui_freetype.cpp" />
+    <ClCompile Include="ext\imgui\imgui_tables.cpp" />
+    <ClCompile Include="ext\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="ext\imgui\impl\imgui_impl_dx11.cpp" />
+    <ClCompile Include="ext\imgui\impl\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\features\aimbot\Aimbot.cpp" />
+    <ClCompile Include="src\features\aimbot\TriggerBot.cpp" />
+    <ClCompile Include="src\features\visuals\PlayerESP.cpp" />
+    <ClCompile Include="src\gui\Gui.cpp" />
+    <ClCompile Include="src\gui\Window.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\utilities\Draw.cpp" />
+    <ClCompile Include="src\utilities\Logging.cpp" />
+    <ClCompile Include="src\utilities\Math.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\gui\Gui.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="ext\freetype\win64\freetype.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets'))" />
+  </Target>
+</Project>
