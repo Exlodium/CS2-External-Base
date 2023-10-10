@@ -6,6 +6,9 @@ This is my first public project, I've decided to share a stripped down version o
 From my limited play testing the cheat does not seem to get you banned, however I can not garuantee safety ( use at your own risk ).
 I've based this cheat on the priciple of **READ ONLY** in an attempt to stay clear of bans
 
+# How to use
+Simply compile the project in Release x64, it should compile a DLL file which you can inject into any x64 process :)
+
 # Features
 **ESP**
 - Box ESP
