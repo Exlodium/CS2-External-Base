@@ -1,6 +1,6 @@
 #include "Precompiled.h"
 
-DWORD WINAPI OnDllAttach( LPVOID lpParameter )
+bool MainLoop( LPVOID lpParameter )
 {
     try
     {
@@ -14,7 +14,7 @@ DWORD WINAPI OnDllAttach( LPVOID lpParameter )
 
         // check for cs2 window
         while (!FindWindowA( NULL, X( "Counter-Strike 2" ) ))
-           std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 
         if (!Window::m_bInitialized)
             Window::Create( );
@@ -29,7 +29,7 @@ DWORD WINAPI OnDllAttach( LPVOID lpParameter )
         do
         {
             Interfaces::m_GlobalVariables = Globals::m_Memory.Read<IGlobalVars>( Globals::m_Memory.Read<std::uintptr_t>( Modules::m_pClient + Offsets::dwGlobalVars ) );
-            if (&Interfaces::m_GlobalVariables == NULL )
+            if (&Interfaces::m_GlobalVariables == NULL)
                 std::this_thread::sleep_for( std::chrono::seconds( 100 ) );
         } while (&Interfaces::m_GlobalVariables == NULL);
 
@@ -72,8 +72,8 @@ DWORD WINAPI OnDllAttach( LPVOID lpParameter )
 
                     // triggerbot
                     if (Variables::TriggerBot::m_bEnabled)
-						g_TriggerBot.Run( );
-                   
+                        g_TriggerBot.Run( );
+
                     // esp
                     if (Variables::Visuals::m_bEnabled)
                         g_PlayerESP.Run( pEntity, pPawn, nIndex );
@@ -84,7 +84,7 @@ DWORD WINAPI OnDllAttach( LPVOID lpParameter )
             Draw::SwapDrawData( );
 
             if (!Window::Render( ))
-                return 0U;
+                return false;
 
             std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
         }
@@ -97,15 +97,22 @@ DWORD WINAPI OnDllAttach( LPVOID lpParameter )
         Logging::Print( X( "[error] {}" ), ex.what( ) );
         Logging::PopConsoleColor( );
 
-    #ifdef _DEBUG
-    // show error message window (or replace to your exception handler)
+        #ifdef _DEBUG
+        // show error message window (or replace to your exception handler)
         _RPT0( _CRT_ERROR, ex.what( ) );
-    #else
-    // unload
+        #else
+        // unload
         FreeLibraryAndExitThread( static_cast< HMODULE >( lpParameter ), EXIT_FAILURE );
-    #endif
+        #endif
     }
+}
 
+#ifdef DLL
+DWORD WINAPI OnDllAttach( LPVOID lpParameter )
+{
+    if ( !MainLoop( lpParameter ) )
+        return 0UL;
+    
     return 1UL;
 }
 
@@ -155,3 +162,22 @@ BOOL WINAPI DllMain( HMODULE hModule, DWORD dwReason, LPVOID lpReserved )
 
     return FALSE;
 }
+#else
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPreviousInstance, LPSTR pArgs, int iCmdShow )
+{
+    // save our module
+    Globals::m_hDll = hInstance;
+
+    if (!MainLoop( hInstance ))
+    {
+        // release handle
+        Globals::m_Memory.~Memory( );
+
+        // destroy context
+        if (Window::m_bInitialized)
+            Window::Destroy( );
+    }
+
+    return 0;
+}
+#endif
