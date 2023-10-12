@@ -7,7 +7,7 @@ From my limited play testing the cheat does not seem to get you banned, however 
 I've based this cheat on the principle of **READ ONLY** in an attempt to stay clear of bans
 
 # How to use
-Simply compile the project in Release x64, it should compile a DLL file which you can inject into any x64 process :)
+Both the Release and Debug configuration will generate a .dll file which can be injected into any x64 process, however for those who prefer a stand alone .exe file. There are the build configurations Release EXE and Debug EXE. These configurations will compile a stand alone .exe application file instead.
 > [!IMPORTANT]
 > Make sure you don't inject the DLL into CS2, inject it into some other x64 process!
   
