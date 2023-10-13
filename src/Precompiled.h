@@ -33,7 +33,6 @@
 // directx
 #include <d3d11.h>
 #include <D3D11.h>
-#include <d3dx9math.h>
 
 // imgui
 #include <imgui.h>

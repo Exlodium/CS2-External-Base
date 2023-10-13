@@ -32,4 +32,20 @@ namespace Offsets
     inline constexpr std::ptrdiff_t m_angEyeAngles = 0x1500;
 
     inline constexpr std::ptrdiff_t m_entitySpottedState = 0x1620;
+
+    inline constexpr std::ptrdiff_t m_bHasDefuser = 0x40;
+    inline constexpr std::ptrdiff_t m_bHasHelmet = 0x41;
+    inline constexpr std::ptrdiff_t m_bHasHeavyArmor = 0x42;
+ 
+    inline constexpr std::ptrdiff_t m_pInGameMoneyServices = 0x6D0;
+    inline constexpr std::ptrdiff_t m_pItemServices = 0x10B0;
+
+    inline constexpr std::ptrdiff_t m_bIsScoped = 0x1388;
+    inline constexpr std::ptrdiff_t m_bIsDefusing = 0x1390;
+
+    inline constexpr std::ptrdiff_t m_iAccount = 0x40;
+    inline constexpr std::ptrdiff_t m_iStartAccount = 0x44;
+    inline constexpr std::ptrdiff_t m_iTotalCashSpent = 0x48;
+    inline constexpr std::ptrdiff_t m_iCashSpentThisRound = 0x4C;
+    inline constexpr std::ptrdiff_t m_nPreviousAccount = 0x50;
 }

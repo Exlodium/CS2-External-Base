@@ -101,6 +101,14 @@ void Gui::Render( )
                 if (Variables::Visuals::m_bSnapLines)
                     SimpleColorPicker( X( "Snap line color" ), &Variables::Visuals::m_colSnapLines );
 
+                // TODO: Make this a multi combo
+                ImGui::Checkbox( X( "Money flag" ), &Variables::Visuals::m_arrFlags[ 0 ] );
+                ImGui::Checkbox( X( "Armor flag" ), &Variables::Visuals::m_arrFlags[ 1 ] );
+                ImGui::Checkbox( X( "Kit flag" ), &Variables::Visuals::m_arrFlags[ 2 ] );
+                ImGui::Checkbox( X( "Defusing flag" ), &Variables::Visuals::m_arrFlags[ 3 ] );
+                ImGui::Checkbox( X( "Zoom flag" ), &Variables::Visuals::m_arrFlags[ 4 ] );
+
+
                 SimpleColorPicker( X( "ESP outline color" ), &Variables::Visuals::m_colOutline );
             }
             break;

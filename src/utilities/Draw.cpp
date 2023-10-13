@@ -121,9 +121,9 @@ void Draw::RenderDrawData( ImDrawList* pDrawList )
 			Vector prevPos;
 			ImVec2 pervScreenPos, screenPos;
 			const auto& pObject = std::any_cast< RingObject_t >( data.pObject );
-			float step = ( float )D3DX_PI * 2.0f / pObject.nSegments;
+			float step = ( float )M_PI * 2.0f / pObject.nSegments;
 
-			for (float a = 0; a < ( D3DX_PI * 2.0f ); a += step)
+			for (float a = 0; a < ( M_PI * 2.0f ); a += step)
 			{
 				Vector start( pObject.flRadius * cosf( a ) + pObject.vecCenter.x, pObject.flRadius * sinf( a ) + pObject.vecCenter.y, pObject.vecCenter.z );
 				Vector end( pObject.flRadius * cosf( a + step ) + pObject.vecCenter.x, pObject.flRadius * sinf( a + step ) + pObject.vecCenter.y, pObject.vecCenter.z );

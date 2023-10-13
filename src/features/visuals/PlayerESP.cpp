@@ -32,7 +32,6 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 	if (Variables::Visuals::m_bBox)
 		DrawBox( 
 			pEntity, 
-			nIndex, 
 			ImVec2( vecScreenHead.x - flWidth, vecScreenHead.y ), 
 			ImVec2( vecScreenHead.x + flWidth, vecScreenFeet.y ),
 			Variables::Visuals::m_colBox,
@@ -42,7 +41,6 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 	if (Variables::Visuals::m_bHealthBar)
 		DrawHealthBar(
 			pPawn,
-			nIndex,
 			ImVec2( ( vecScreenHead.x - flWidth ) - 6.0f, vecScreenHead.y - 1.0f ),
 			ImVec2( ( vecScreenHead.x - flWidth ) - 2.0f, vecScreenFeet.y + 1.0f ),
 			Color( 255, 255, 255, 255 ),
@@ -52,7 +50,6 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 	if (Variables::Visuals::m_bArmorBar)
 		DrawArmorBar(
 			pPawn,
-			nIndex,
 			ImVec2( ( vecScreenHead.x - flWidth ) - ( this->m_arrPadding.at( DIR_LEFT ) + 4.0f ), vecScreenHead.y - 1.0f ),
 			ImVec2( ( vecScreenHead.x - flWidth ) - this->m_arrPadding.at( DIR_LEFT ), vecScreenFeet.y + 1.0f ),
 			Variables::Visuals::m_colArmorBar,
@@ -62,7 +59,6 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 	if (Variables::Visuals::m_bName)
 		DrawName( 
 			pEntity, 
-			nIndex, 
 			ImVec2( vecScreenHead.x, vecScreenHead.y ),
 			Color( 255, 255, 255, 255 ),
 			Variables::Visuals::m_colOutline
@@ -71,7 +67,6 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 	if (Variables::Visuals::m_bDistance)
 		DrawDistance(
 			pPawn, 
-			nIndex, 
 			ImVec2( vecScreenHead.x, vecScreenFeet.y + this->m_arrPadding.at( DIR_BOTTOM ) ),
 			Color( 255, 255, 255, 255 ),
 			Variables::Visuals::m_colOutline
@@ -80,18 +75,24 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 	if (Variables::Visuals::m_bSnapLines)
 		DrawSnapLine( 
 			ImVec2( vecScreenFeet.x, vecScreenFeet.y ), 
-			nIndex,
 			Variables::Visuals::m_colSnapLines
 		);
 
+	DrawFlags(
+		pEntity,
+		pPawn,
+		ImVec2( vecScreenHead.x + flWidth + 2.0f, vecScreenHead.y ),
+		Color( 255, 255, 255, 255 ),
+		Variables::Visuals::m_colOutline
+	);
 }
 
-void CPlayerESP::DrawBox( CCSPlayerController* pEntity, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
+void CPlayerESP::DrawBox( CCSPlayerController* pEntity, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
 {
 	Draw::AddRect( vecMin, vecMax, colColor, DRAW_RECT_OUTLINE | DRAW_RECT_BORDER | DRAW_RECT_ALIGNED, colOutline );
 }
 
-void CPlayerESP::DrawHealthBar( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
+void CPlayerESP::DrawHealthBar( CCSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
 {
 	const int iHealth = pPawn->m_iHealth( );
 	const float flFactor = static_cast< float >( iHealth ) * 0.01f;
@@ -111,7 +112,7 @@ void CPlayerESP::DrawHealthBar( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecMin,
 	this->m_arrPadding.at( DIR_LEFT ) += 7.0f;
 }
 
-void CPlayerESP::DrawArmorBar( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
+void CPlayerESP::DrawArmorBar( CCSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
 {
  	if ( !this->m_bArmored )
 		return;
@@ -133,7 +134,7 @@ void CPlayerESP::DrawArmorBar( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecMin, 
 	this->m_arrPadding.at( DIR_LEFT ) += 7.0f;
 }
 
-void CPlayerESP::DrawName( CCSPlayerController* pEntity, int nIndex, ImVec2 vecPosition, Color colColor, Color colOutline )
+void CPlayerESP::DrawName( CCSPlayerController* pEntity, ImVec2 vecPosition, Color colColor, Color colOutline )
 {
 	const std::string strName = pEntity->m_strSanitizedPlayerName( );
 	const ImVec2 vecNameSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strName.c_str( ) );
@@ -141,7 +142,7 @@ void CPlayerESP::DrawName( CCSPlayerController* pEntity, int nIndex, ImVec2 vecP
 	this->m_arrPadding.at( DIR_TOP ) += vecNameSize.y;
 }
 
-void CPlayerESP::DrawDistance( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecPosition, Color colColor, Color colOutline )
+void CPlayerESP::DrawDistance( CCSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline )
 {
 	const Vector vecLocalOrigin = Globals::m_pLocalPlayerPawn->m_vecOrigin( );
 	const Vector vecEntityOrigin = pPawn->m_vecOrigin( );
@@ -159,7 +160,69 @@ void CPlayerESP::DrawDistance( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecPosit
 	this->m_arrPadding.at( DIR_BOTTOM ) += vecDistanceSize.y;
 }
 
-void CPlayerESP::DrawSnapLine( ImVec2 vecPosition, int nIndex, Color colColor )
+void CPlayerESP::DrawSnapLine( ImVec2 vecPosition, Color colColor )
 {
 	Draw::AddLine( ImVec2( static_cast<float>( Window::m_iWidth ) * 0.5f, static_cast< float >( Window::m_iHeight ) * 0.5f ), vecPosition, colColor, 1.0f );
+}
+
+void CPlayerESP::DrawFlags( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline )
+{
+	CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices( );
+	CCSPlayerController_InGameMoneyServices* pInGameMoneyServices = pEntity->m_pInGameMoneyServices( );
+	if (!pItemServices || !pInGameMoneyServices)
+		return;
+
+	int iFlagsHeight = 0;
+	// create our flagObject
+	FlagObjects_t flagObjects{ pItemServices->m_bHasHelmet( ), pItemServices->m_bHasHeavyArmor( ), pItemServices->m_bHasDefuser( ), pPawn->m_bIsScoped( ), pPawn->m_bIsDefusing( ), this->m_bFlashed, pInGameMoneyServices->m_iAccount( ) };
+
+	if (Variables::Visuals::m_arrFlags[ 0 ])
+	{
+		const std::string strText = std::to_string( flagObjects.m_iMoney ).append( X( "$" ) );
+		const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
+		Draw::AddText( Fonts::ESP, 10.0f, ImVec2( vecPosition.x, vecPosition.y + iFlagsHeight ), strText.c_str( ), Color( 141, 227, 66, 255 ), DRAW_TEXT_OUTLINE, colOutline );
+		iFlagsHeight += vecTextSize.y - 2.0f;
+	}
+
+	if (Variables::Visuals::m_arrFlags[ 1 ] && this->m_bArmored)
+	{
+		if (flagObjects.m_bHasHeavyArmor)
+		{
+			const std::string strText = X( "HEAVY" );
+			const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
+			Draw::AddText( Fonts::ESP, 10.0f, ImVec2( vecPosition.x, vecPosition.y + iFlagsHeight ), strText.c_str( ), colColor, DRAW_TEXT_OUTLINE, colOutline );
+			iFlagsHeight += vecTextSize.y - 2.0f;
+		}
+		else
+		{
+			const std::string strText = flagObjects.m_bHasHelmet ? X( "H+K" ) : X( "H" );
+			const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
+			Draw::AddText( Fonts::ESP, 10.0f, ImVec2( vecPosition.x, vecPosition.y + iFlagsHeight ), strText.c_str( ), colColor, DRAW_TEXT_OUTLINE, colOutline );
+			iFlagsHeight += vecTextSize.y - 2.0f;
+		}
+	}
+
+	if (Variables::Visuals::m_arrFlags[ 2 ] && flagObjects.m_bHasDefuser)
+	{
+		const std::string strText = X( "KIT" );
+		const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
+		Draw::AddText( Fonts::ESP, 10.0f, ImVec2( vecPosition.x, vecPosition.y + iFlagsHeight ), strText.c_str( ), Color( 63, 151, 224, 255 ), DRAW_TEXT_OUTLINE, colOutline );
+		iFlagsHeight += vecTextSize.y - 2.0f;
+	}
+
+	if (Variables::Visuals::m_arrFlags[ 3 ] && flagObjects.m_bIsDefusing)
+	{
+		const std::string strText = X( "DEFUSING" );
+		const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
+		Draw::AddText( Fonts::ESP, 10.0f, ImVec2( vecPosition.x, vecPosition.y + iFlagsHeight ), strText.c_str( ), Color( 63, 151, 224, 255 ), DRAW_TEXT_OUTLINE, colOutline );
+		iFlagsHeight += vecTextSize.y - 2.0f;
+	}
+
+	if (Variables::Visuals::m_arrFlags[ 4 ] && flagObjects.m_bIsScoping)
+	{
+		const std::string strText = X( "ZOOM" );
+		const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
+		Draw::AddText( Fonts::ESP, 10.0f, ImVec2( vecPosition.x, vecPosition.y + iFlagsHeight ), strText.c_str( ), colColor, DRAW_TEXT_OUTLINE, colOutline );
+		iFlagsHeight += vecTextSize.y - 2.0f;
+	}
 }

@@ -31,6 +31,8 @@ namespace Variables
 
 		inline bool m_bSnapLines = false;
 		inline Color m_colSnapLines = Color( 255, 255, 255, 255 );
+
+		inline bool m_arrFlags[ 5 ] = { false, false, false, false, false };
 	}
 
 	namespace Aimbot
