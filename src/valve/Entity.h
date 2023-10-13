@@ -65,6 +65,16 @@ public:
         return pCSPlayerPawn;
     }
 
+    int m_ArmorValue( )
+    {
+        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_ArmorValue );
+    }
+
+    int m_iHealth( )
+    {
+        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iHealth );
+    }
+
     float m_flFlashAlpha( )
     {
         return Globals::m_Memory.Read<float>( reinterpret_cast< DWORD64 >( this ) + ( Offsets::m_flFlashMaxAlpha - 0x8 ) );
@@ -121,7 +131,7 @@ public:
         std::string sBuffer = { };
         sBuffer.resize( 32 );
 
-        DWORD64 SanitizedPlayerName = Globals::m_Memory.Read<DWORD64>( ( reinterpret_cast< DWORD64 >( this ) + Offsets::dwSanitizedName ) );
+        DWORD64 SanitizedPlayerName = Globals::m_Memory.Read<DWORD64>( ( reinterpret_cast< DWORD64 >( this ) + Offsets::m_sSanitizedPlayerName ) );
         if (!SanitizedPlayerName)
             return { };
 
@@ -134,29 +144,9 @@ public:
         return Globals::m_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bPawnIsAlive );
     }
 
-    bool m_bPawnHasDefuser( )
-    {
-        return Globals::m_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bPawnHasDefuser );
-    }
-
-    bool m_bPawnHasHelmet( )
-    {
-        return Globals::m_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bPawnHasHelmet );
-    }
-
     int m_iTeamNum( )
     {
         return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iTeamNum );
-    }
-
-    int m_iPawnHealth( )
-    {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iPawnHealth );
-    }
-
-    int m_iPawnArmor( )
-    {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iPawnArmor );
     }
 
     bool m_bIsLocalPlayerController( )
@@ -166,7 +156,7 @@ public:
 
     CCSPlayerPawn* m_hPlayerPawn( )
     {
-        std::uint32_t uPlayerPawn = Globals::m_Memory.Read<std::uint32_t>( reinterpret_cast< DWORD64 >( this ) + Offsets::dwPlayerPawn );
+        std::uint32_t uPlayerPawn = Globals::m_Memory.Read<std::uint32_t>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_hPlayerPawn );
         return CCSPlayerPawn::GetPlayerPawn( uPlayerPawn );
     }
 };

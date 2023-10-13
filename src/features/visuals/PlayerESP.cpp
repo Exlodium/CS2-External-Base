@@ -25,7 +25,7 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 	const float flWidth = flHeight * 0.33f;
 
 	this->m_bFlashed = pPawn->m_flFlashAlpha( ) > 0.0f;
-	this->m_bArmored = pEntity->m_iPawnArmor( ) > 0.0f;
+	this->m_bArmored = pPawn->m_ArmorValue( ) > 0;
 	this->m_arrPadding = { 0.0f, 0.0f, 0.0f, 2.0f };
 	this->m_flSideBarInfoHeightLeft = 0.0f;
 
@@ -41,7 +41,7 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 
 	if (Variables::Visuals::m_bHealthBar)
 		DrawHealthBar(
-			pEntity,
+			pPawn,
 			nIndex,
 			ImVec2( ( vecScreenHead.x - flWidth ) - 6.0f, vecScreenHead.y - 1.0f ),
 			ImVec2( ( vecScreenHead.x - flWidth ) - 2.0f, vecScreenFeet.y + 1.0f ),
@@ -51,7 +51,7 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 		
 	if (Variables::Visuals::m_bArmorBar)
 		DrawArmorBar(
-			pEntity,
+			pPawn,
 			nIndex,
 			ImVec2( ( vecScreenHead.x - flWidth ) - ( this->m_arrPadding.at( DIR_LEFT ) + 4.0f ), vecScreenHead.y - 1.0f ),
 			ImVec2( ( vecScreenHead.x - flWidth ) - this->m_arrPadding.at( DIR_LEFT ), vecScreenFeet.y + 1.0f ),
@@ -91,9 +91,9 @@ void CPlayerESP::DrawBox( CCSPlayerController* pEntity, int nIndex, ImVec2 vecMi
 	Draw::AddRect( vecMin, vecMax, colColor, DRAW_RECT_OUTLINE | DRAW_RECT_BORDER | DRAW_RECT_ALIGNED, colOutline );
 }
 
-void CPlayerESP::DrawHealthBar( CCSPlayerController* pEntity, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
+void CPlayerESP::DrawHealthBar( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
 {
-	const int iHealth = pEntity->m_iPawnHealth( );
+	const int iHealth = pPawn->m_iHealth( );
 	const float flFactor = static_cast< float >( iHealth ) * 0.01f;
 	const float flHue = ( flFactor * 120.f ) / 360.f;
 	const float flHeight = vecMax.y - vecMin.y;
@@ -111,12 +111,12 @@ void CPlayerESP::DrawHealthBar( CCSPlayerController* pEntity, int nIndex, ImVec2
 	this->m_arrPadding.at( DIR_LEFT ) += 7.0f;
 }
 
-void CPlayerESP::DrawArmorBar( CCSPlayerController* pEntity, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
+void CPlayerESP::DrawArmorBar( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
 {
-	if ( !this->m_bArmored)
+ 	if ( !this->m_bArmored )
 		return;
 
-	const int iArmor = pEntity->m_iPawnArmor( );
+	const int iArmor = pPawn->m_ArmorValue( );
 	const float flFactor = static_cast< float >( iArmor ) * 0.01f;
 	const float flHeight = vecMax.y - vecMin.y;
 

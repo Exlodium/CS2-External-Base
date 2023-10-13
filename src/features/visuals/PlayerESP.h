@@ -16,8 +16,8 @@ public:
 private:
 	// functions
 	void DrawBox( CCSPlayerController* pEntity, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
-	void DrawHealthBar( CCSPlayerController* pEntity, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
-	void DrawArmorBar( CCSPlayerController* pEntity, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
+	void DrawHealthBar( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
+	void DrawArmorBar( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
 	void DrawName( CCSPlayerController* pEntity, int nIndex, ImVec2 vecPosition, Color colColor, Color colOutline );
 	void DrawDistance( CCSPlayerPawn* pPawn, int nIndex, ImVec2 vecPosition, Color colColor, Color colOutline );
 	void DrawSnapLine( ImVec2 vecPosition, int nIndex, Color colColor );
