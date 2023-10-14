@@ -19,6 +19,7 @@ Both the Release and Debug configuration will generate a .dll file which can be 
 - Name ESP
 - Distance ESP
 - Snapline ESP
+- Flags ( Money, Armor, Defuse kit, Desufing, Scoping )
   
 **ImGui overlay**
 - Automatically get screen resolution ( only on initialization )
