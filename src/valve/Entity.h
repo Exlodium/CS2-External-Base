@@ -132,9 +132,9 @@ public:
         return Globals::m_Memory.Read<float>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_flFlashDuration );
     }
 
-    const Vector m_vecOrigin( )
+    const Vector m_vOldOrigin( )
     {
-        return Globals::m_Memory.Read<Vector>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_vecOrigin );
+        return Globals::m_Memory.Read<Vector>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_vOldOrigin );
     }
 
     const Vector m_vecCameraPosition( )

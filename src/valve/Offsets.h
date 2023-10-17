@@ -2,11 +2,11 @@
 
 namespace Offsets
 {
-    inline constexpr std::ptrdiff_t dwGlobalVars = 0x1692EE8;
+    inline constexpr std::ptrdiff_t dwGlobalVars = 0x1696F40;
 
-    inline constexpr std::ptrdiff_t dwEntityList = 0x178FC88;
-    inline constexpr std::ptrdiff_t dwLocalPlayerController = 0x17DE508;
-    inline constexpr std::ptrdiff_t dwViewMatrix = 0x187DAB0;
+    inline constexpr std::ptrdiff_t dwEntityList = 0x1793DC8;
+    inline constexpr std::ptrdiff_t dwLocalPlayerController = 0x17E27C8;
+    inline constexpr std::ptrdiff_t dwViewMatrix = 0x1881D70;
 
     inline constexpr std::ptrdiff_t dwGameSceneNode = 0x310;
     inline constexpr std::ptrdiff_t dwModelState = 0x160;
@@ -20,18 +20,18 @@ namespace Offsets
     
     inline constexpr std::ptrdiff_t m_iTeamNum = 0x3BF;
 
-    inline constexpr std::ptrdiff_t m_ArmorValue = 0x14F8;
+    inline constexpr std::ptrdiff_t m_ArmorValue = 0x14F0;
     inline constexpr std::ptrdiff_t m_iHealth = 0x32C;
 
-    inline constexpr std::ptrdiff_t m_flFlashMaxAlpha = 0x1450;
-    inline constexpr std::ptrdiff_t m_flFlashDuration = 0x1454;
+    inline constexpr std::ptrdiff_t m_flFlashMaxAlpha = 0x144C;
+    inline constexpr std::ptrdiff_t m_flFlashDuration = 0x1450;
 
-    inline constexpr std::ptrdiff_t m_vecOrigin = 0x1214;
+    inline constexpr std::ptrdiff_t m_vOldOrigin = 0x1214;
     inline constexpr std::ptrdiff_t m_vecLastClipCameraPos = 0x1274;
 
-    inline constexpr std::ptrdiff_t m_angEyeAngles = 0x1500;
+    inline constexpr std::ptrdiff_t m_angEyeAngles = 0x14F8;
 
-    inline constexpr std::ptrdiff_t m_entitySpottedState = 0x1620;
+    inline constexpr std::ptrdiff_t m_entitySpottedState = 0x1618;
 
     inline constexpr std::ptrdiff_t m_bHasDefuser = 0x40;
     inline constexpr std::ptrdiff_t m_bHasHelmet = 0x41;

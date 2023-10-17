@@ -6,7 +6,7 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nI
 	if (Variables::Visuals::m_bIgnoreTeammates && pEntity->m_iTeamNum( ) == Globals::m_pLocalPlayerController->m_iTeamNum( ) || !this->m_bSpotted)
 		return;
 
-	Vector vecEntityOrigin = pPawn->m_vecOrigin( );
+	Vector vecEntityOrigin = pPawn->m_vOldOrigin( );
 	Vector vecHead = pEntity->GetBonePosition( EBones::HEAD );
 	if (vecEntityOrigin.IsZero( ) || vecHead.IsZero( ))
 		return;
@@ -144,8 +144,8 @@ void CPlayerESP::DrawName( CCSPlayerController* pEntity, ImVec2 vecPosition, Col
 
 void CPlayerESP::DrawDistance( CCSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline )
 {
-	const Vector vecLocalOrigin = Globals::m_pLocalPlayerPawn->m_vecOrigin( );
-	const Vector vecEntityOrigin = pPawn->m_vecOrigin( );
+	const Vector vecLocalOrigin = Globals::m_pLocalPlayerPawn->m_vOldOrigin( );
+	const Vector vecEntityOrigin = pPawn->m_vOldOrigin( );
 
 	if (vecEntityOrigin.IsZero( ) || vecLocalOrigin.IsZero( ))
 		return;
