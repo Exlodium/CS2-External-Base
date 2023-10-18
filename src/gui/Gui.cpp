@@ -1,5 +1,14 @@
 #include "../Precompiled.h"
 
+const char* arrFlagsNames[ ] =
+{
+    "Money flag",
+    "Armor flag",
+    "Kit flag",
+    "Defusing flag",
+    "Zoom flag"
+};
+
 void Gui::Initialize( unsigned int uFontFlags )
 {
     // create fonts
@@ -101,13 +110,14 @@ void Gui::Render( )
                 if (Variables::Visuals::m_bSnapLines)
                     SimpleColorPicker( X( "Snap line color" ), &Variables::Visuals::m_colSnapLines );
 
+                MultiCombo( X( "Flags" ), arrFlagsNames, Variables::Visuals::m_arrFlags, IM_ARRAYSIZE( arrFlagsNames ) );
+
                 // TODO: Make this a multi combo
-                ImGui::Checkbox( X( "Money flag" ), &Variables::Visuals::m_arrFlags[ 0 ] );
+                /*ImGui::Checkbox( X( "Money flag" ), &Variables::Visuals::m_arrFlags[ 0 ] );
                 ImGui::Checkbox( X( "Armor flag" ), &Variables::Visuals::m_arrFlags[ 1 ] );
                 ImGui::Checkbox( X( "Kit flag" ), &Variables::Visuals::m_arrFlags[ 2 ] );
                 ImGui::Checkbox( X( "Defusing flag" ), &Variables::Visuals::m_arrFlags[ 3 ] );
-                ImGui::Checkbox( X( "Zoom flag" ), &Variables::Visuals::m_arrFlags[ 4 ] );
-
+                ImGui::Checkbox( X( "Zoom flag" ), &Variables::Visuals::m_arrFlags[ 4 ] );*/
 
                 SimpleColorPicker( X( "ESP outline color" ), &Variables::Visuals::m_colOutline );
             }
