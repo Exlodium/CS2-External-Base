@@ -2,11 +2,11 @@
 
 namespace Offsets
 {
-    inline constexpr std::ptrdiff_t dwGlobalVars = 0x1699F40;
+    inline constexpr std::ptrdiff_t dwGlobalVars = 0x169AFE0;
 
-    inline constexpr std::ptrdiff_t dwEntityList = 0x1798738;
-    inline constexpr std::ptrdiff_t dwLocalPlayerController = 0x17E7158;
-    inline constexpr std::ptrdiff_t dwViewMatrix = 0x1886710;
+    inline constexpr std::ptrdiff_t dwEntityList = 0x17995C0;
+    inline constexpr std::ptrdiff_t dwLocalPlayerController = 0x17E8158;
+    inline constexpr std::ptrdiff_t dwViewMatrix = 0x1887730;
 
     inline constexpr std::ptrdiff_t dwGameSceneNode = 0x310;
     inline constexpr std::ptrdiff_t dwModelState = 0x160;
