@@ -2,11 +2,11 @@
 
 namespace Offsets
 {
-    inline constexpr std::ptrdiff_t dwGlobalVars = 0x169AFE0;
+    inline constexpr std::ptrdiff_t dwGlobalVars = 0x16AB2E0;
 
-    inline constexpr std::ptrdiff_t dwEntityList = 0x17995C0;
-    inline constexpr std::ptrdiff_t dwLocalPlayerController = 0x17E8158;
-    inline constexpr std::ptrdiff_t dwViewMatrix = 0x1887730;
+    inline constexpr std::ptrdiff_t dwEntityList = 0x17AA8F8;
+    inline constexpr std::ptrdiff_t dwLocalPlayerController = 0x17F9C18;
+    inline constexpr std::ptrdiff_t dwViewMatrix = 0x1899080;
 
     inline constexpr std::ptrdiff_t dwGameSceneNode = 0x310;
     inline constexpr std::ptrdiff_t dwModelState = 0x160;
@@ -20,18 +20,18 @@ namespace Offsets
     
     inline constexpr std::ptrdiff_t m_iTeamNum = 0x3BF;
 
-    inline constexpr std::ptrdiff_t m_ArmorValue = 0x14F0;
+    inline constexpr std::ptrdiff_t m_ArmorValue = 0x1500;
     inline constexpr std::ptrdiff_t m_iHealth = 0x32C;
 
     inline constexpr std::ptrdiff_t m_flFlashMaxAlpha = 0x144C;
     inline constexpr std::ptrdiff_t m_flFlashDuration = 0x1450;
 
-    inline constexpr std::ptrdiff_t m_vOldOrigin = 0x1214;
-    inline constexpr std::ptrdiff_t m_vecLastClipCameraPos = 0x1274;
+    inline constexpr std::ptrdiff_t m_vOldOrigin = 0x1224;
+    inline constexpr std::ptrdiff_t m_vecLastClipCameraPos = 0x1284;
 
-    inline constexpr std::ptrdiff_t m_angEyeAngles = 0x14F8;
+    inline constexpr std::ptrdiff_t m_angEyeAngles = 0x1508;
 
-    inline constexpr std::ptrdiff_t m_entitySpottedState = 0x1618;
+    inline constexpr std::ptrdiff_t m_entitySpottedState = 0x1628;
 
     inline constexpr std::ptrdiff_t m_bHasDefuser = 0x40;
     inline constexpr std::ptrdiff_t m_bHasHelmet = 0x41;
@@ -40,8 +40,8 @@ namespace Offsets
     inline constexpr std::ptrdiff_t m_pInGameMoneyServices = 0x6D0;
     inline constexpr std::ptrdiff_t m_pItemServices = 0x10B0;
 
-    inline constexpr std::ptrdiff_t m_bIsScoped = 0x1388;
-    inline constexpr std::ptrdiff_t m_bIsDefusing = 0x1390;
+    inline constexpr std::ptrdiff_t m_bIsScoped = 0x1398;
+    inline constexpr std::ptrdiff_t m_bIsDefusing = 0x13A0;
 
     inline constexpr std::ptrdiff_t m_iAccount = 0x40;
     inline constexpr std::ptrdiff_t m_iStartAccount = 0x44;
