@@ -33,24 +33,15 @@ bool MainLoop( LPVOID lpParameter )
                 std::this_thread::sleep_for( std::chrono::seconds( 100 ) );
         } while (&Interfaces::m_GlobalVariables == NULL);
 
-        do
-        {
-            Globals::m_pLocalPlayerController = Globals::m_Memory.Read<CCSPlayerController*>( Modules::m_pClient + Offsets::dwLocalPlayerController );
-            if (Globals::m_pLocalPlayerController == nullptr)
-                std::this_thread::sleep_for( std::chrono::seconds( 100 ) );
-        } while (Globals::m_pLocalPlayerController == nullptr);
-
-        do
-        {
-            Globals::m_pLocalPlayerPawn = Globals::m_pLocalPlayerController->m_hPlayerPawn( );
-            if (Globals::m_pLocalPlayerPawn == nullptr)
-                std::this_thread::sleep_for( std::chrono::seconds( 100 ) );
-        } while (Globals::m_pLocalPlayerPawn == nullptr);
-
         SetPriorityClass( GetCurrentProcess( ), HIGH_PRIORITY_CLASS );
 
         while (!Globals::m_bIsUnloading)
         {
+            // update globals
+            Globals::m_pLocalPlayerController = Globals::m_Memory.Read<CCSPlayerController*>( Modules::m_pClient + Offsets::dwLocalPlayerController );
+            Globals::m_pLocalPlayerPawn = Globals::m_pLocalPlayerController->m_hPlayerPawn( );
+            Globals::m_uEntityList = Globals::m_Memory.Read<std::uintptr_t>( Modules::m_pClient + Offsets::dwEntityList );
+
             // clear data from previous call
             Draw::ClearDrawData( );
 

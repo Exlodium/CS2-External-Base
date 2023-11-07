@@ -56,6 +56,8 @@ namespace Globals
 	inline CCSPlayerController* m_pLocalPlayerController = nullptr;
 	// pointer to local player pawn ( casted from player controller )
 	inline CCSPlayerPawn* m_pLocalPlayerPawn = nullptr;
+	// global entity list access point
+	inline std::uintptr_t m_uEntityList = NULL;
 }
 
 class CTimer

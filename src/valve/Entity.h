@@ -47,8 +47,7 @@ class CBaseEntity
 public:
     static CBaseEntity* GetBaseEntity( int nIdx )
     {
-        static std::uintptr_t uEntityList = Globals::m_Memory.Read<std::uintptr_t>( Modules::m_pClient + Offsets::dwEntityList );
-        std::uintptr_t uListEntry = Globals::m_Memory.Read<std::uint64_t>( uEntityList + ( 0x8 * ( nIdx & 0x7FFF ) >> 9 ) + 16 );
+        std::uintptr_t uListEntry = Globals::m_Memory.Read<std::uint64_t>( Globals::m_uEntityList + ( 0x8 * ( nIdx & 0x7FFF ) >> 9 ) + 16 );
         if( !uListEntry )
             return 0;
 
@@ -82,8 +81,8 @@ class CCSPlayerPawn
 public:
     static CCSPlayerPawn* GetPlayerPawn( std::uint32_t uHandle )
     {
-        static std::uintptr_t uEntityList = Globals::m_Memory.Read<std::uintptr_t>( Modules::m_pClient + Offsets::dwEntityList );
-        std::uintptr_t uListEntry = Globals::m_Memory.Read<std::uintptr_t>( uEntityList + 0x8 * ( ( uHandle & 0x7FFF ) >> 9 ) + 16 );
+        
+        std::uintptr_t uListEntry = Globals::m_Memory.Read<std::uintptr_t>( Globals::m_uEntityList + 0x8 * ( ( uHandle & 0x7FFF ) >> 9 ) + 16 );
         if (!uListEntry)
             return 0;
 
