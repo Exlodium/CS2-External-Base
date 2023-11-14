@@ -2,21 +2,21 @@
 
 namespace Offsets
 {
-    inline constexpr std::ptrdiff_t dwGlobalVars = 0x16AC100;
+    inline constexpr std::ptrdiff_t dwGlobalVars = 0x16AE488;
 
-    inline constexpr std::ptrdiff_t dwEntityList = 0x17AB958;
-    inline constexpr std::ptrdiff_t dwLocalPlayerController = 0x17FAC68;
-    inline constexpr std::ptrdiff_t dwViewMatrix = 0x180A0D0;
+    inline constexpr std::ptrdiff_t dwEntityList = 0x17ADAF0;
+    inline constexpr std::ptrdiff_t dwLocalPlayerController = 0x17FCDC8;
+    inline constexpr std::ptrdiff_t dwViewMatrix = 0x180C100;
 
     inline constexpr std::ptrdiff_t dwGameSceneNode = 0x310;
     inline constexpr std::ptrdiff_t dwModelState = 0x160;
     inline constexpr std::ptrdiff_t dwBoneMatrix = 0x80;
 
-    inline constexpr std::ptrdiff_t m_sSanitizedPlayerName = 0x720;
-    inline constexpr std::ptrdiff_t m_hPlayerPawn = 0x7BC;
+    inline constexpr std::ptrdiff_t m_sSanitizedPlayerName = 0x738;
+    inline constexpr std::ptrdiff_t m_hPlayerPawn = 0x7D4;
     
-    inline constexpr std::ptrdiff_t m_bPawnIsAlive = 0x7C4;
-    inline constexpr std::ptrdiff_t m_bIsLocalPlayerController = 0x6A0;
+    inline constexpr std::ptrdiff_t m_bPawnIsAlive = 0x7DC;
+    inline constexpr std::ptrdiff_t m_bIsLocalPlayerController = 0x6B8;
     
     inline constexpr std::ptrdiff_t m_iTeamNum = 0x3BF;
 
@@ -37,7 +37,7 @@ namespace Offsets
     inline constexpr std::ptrdiff_t m_bHasHelmet = 0x41;
     inline constexpr std::ptrdiff_t m_bHasHeavyArmor = 0x42;
  
-    inline constexpr std::ptrdiff_t m_pInGameMoneyServices = 0x6D0;
+    inline constexpr std::ptrdiff_t m_pInGameMoneyServices = 0x6E8;
     inline constexpr std::ptrdiff_t m_pItemServices = 0x10B0;
 
     inline constexpr std::ptrdiff_t m_bIsScoped = 0x13A0;
