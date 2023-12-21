@@ -19,19 +19,13 @@ bool MainLoop( LPVOID lpParameter )
         if (!Window::m_bInitialized)
             Window::Create( );
 
+        // find client.dll address
         do
         {
             Modules::m_pClient = Globals::m_Memory.GetModuleAddress( X( "client.dll" ) );
             if (Modules::m_pClient == NULL)
                 std::this_thread::sleep_for( std::chrono::seconds( 100 ) );
         } while (Modules::m_pClient == NULL);
-
-        do
-        {
-            Interfaces::m_GlobalVariables = Globals::m_Memory.Read<IGlobalVars>( Globals::m_Memory.Read<std::uintptr_t>( Modules::m_pClient + Offsets::dwGlobalVars ) );
-            if (&Interfaces::m_GlobalVariables == NULL)
-                std::this_thread::sleep_for( std::chrono::seconds( 100 ) );
-        } while (&Interfaces::m_GlobalVariables == NULL);
 
         SetPriorityClass( GetCurrentProcess( ), HIGH_PRIORITY_CLASS );
 
@@ -41,6 +35,9 @@ bool MainLoop( LPVOID lpParameter )
             Globals::m_pLocalPlayerController = Globals::m_Memory.Read<CCSPlayerController*>( Modules::m_pClient + Offsets::dwLocalPlayerController );
             Globals::m_pLocalPlayerPawn = Globals::m_pLocalPlayerController->m_hPlayerPawn( );
             Globals::m_uEntityList = Globals::m_Memory.Read<std::uintptr_t>( Modules::m_pClient + Offsets::dwEntityList );
+            
+            // update global variables
+            Interfaces::m_GlobalVariables = Globals::m_Memory.Read<IGlobalVars>( Globals::m_Memory.Read<std::uintptr_t>( Modules::m_pClient + Offsets::dwGlobalVars ) );
 
             // clear data from previous call
             Draw::ClearDrawData( );
