@@ -29,6 +29,10 @@
 #include <cmath>
 #include <limits>
 #include <map>
+#include <filesystem>
+#include <shlobj_core.h>
+#include <KnownFolders.h>
+#include <Psapi.h>
 
 // directx
 #include <d3d11.h>
@@ -41,11 +45,26 @@
 #include <imgui_impl_win32.h>
 #include <imgui_freetype.h>
 
+// json
+#include <json.hpp>
+
+// stb
+#include <stb_image.h>
+#include <stb_sprintf.h>
+
 // crypt
 #include "memory/crypt/XorStr.h"
+#include "memory/crypt/FNV1A.h"
 
 // logging
 #include "utilities/Logging.h"
+
+// enums and definitions
+#include "Enums.h"
+#include "Definitions.h"
+
+// CRT
+#include "utilities/CRT.h"
 
 // memory
 #include "memory/Memory.h"
@@ -54,13 +73,20 @@
 #include "memory/datatypes/QAngle.h"
 #include "memory/datatypes/Color.h"
 #include "memory/datatypes/CUtlVector.h"
+#include "memory/datatypes/CUtlHash.h"
+
+// configs
+#include "config/Config.h"
+#include "config/Variables.h"
 
 // globals
 #include "Globals.h"
-#include "config/Variables.h"
+
+// utilities
 #include "utilities/Math.h"
 
 // valve
+#include "valve/Schema.h"
 #include "valve/Offsets.h"
 #include "valve/Entity.h"
 
@@ -69,6 +95,9 @@
 
 // input
 #include "utilities/InputSytem.h"
+
+// entity list
+#include "features/entities/EntityList.h"
 
 // features
 #include "features/visuals/PlayerESP.h"

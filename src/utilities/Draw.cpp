@@ -289,7 +289,7 @@ void Draw::AddDrawListText( ImDrawList* pDrawList, const ImFont* pFont, float fl
 #pragma region draw_extra
 bool Draw::WorldToScreen( const Vector& vecOrigin, ImVec2& vecScreen )
 {
-	const ViewMatrix_t& matWorldToScreen = Globals::m_Memory.Read<ViewMatrix_t>( Modules::m_pClient + Offsets::dwViewMatrix );
+	const ViewMatrix_t& matWorldToScreen = g_Memory.Read<ViewMatrix_t>(Modules::m_pClient.m_uAddress + Offsets::dwViewMatrix);
 	const float flWidth = matWorldToScreen[ 3 ][ 0 ] * vecOrigin.x + matWorldToScreen[ 3 ][ 1 ] * vecOrigin.y + matWorldToScreen[ 3 ][ 2 ] * vecOrigin.z + matWorldToScreen[ 3 ][ 3 ];
 
 	if (flWidth < 0.001f)

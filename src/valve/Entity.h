@@ -1,25 +1,5 @@
 #pragma once
 
-enum EBones : unsigned long
-{
-    PELVIS = 0,
-    SPINE = 4,
-    NECK,
-    HEAD,
-    LEFT_UPPER_ARM = 8,
-    LEFT_LOWER_ARM,
-    LEFT_HAND,
-    RIGHT_UPPER_ARM = 13,
-    RIGHT_LOWER_ARM,
-    RIGHT_HAND,
-    LEFT_UPPER_LEG = 22,
-    LEFT_LOWER_LEG,
-    LEFT_ANKLE,
-    RIGHT_UPPER_LEG,
-    RIGHT_LOWER_LEG,
-    RIGHT_ANKLE
-};
-
 struct BoneJointData
 {
     Vector m_vecPosition;
@@ -47,11 +27,11 @@ class CBaseEntity
 public:
     static CBaseEntity* GetBaseEntity( int nIdx )
     {
-        std::uintptr_t uListEntry = Globals::m_Memory.Read<std::uint64_t>( Globals::m_uEntityList + ( 0x8 * ( nIdx & 0x7FFF ) >> 9 ) + 16 );
+        std::uintptr_t uListEntry = g_Memory.Read<std::uint64_t>( Globals::m_uEntityList + ( 0x8 * ( nIdx & 0x7FFF ) >> 9 ) + 16 );
         if( !uListEntry )
             return 0;
 
-        CBaseEntity* pEntity = Globals::m_Memory.Read<CBaseEntity*>( uListEntry + 120 * ( nIdx & 0x1FF ) );
+        CBaseEntity* pEntity = g_Memory.Read<CBaseEntity*>( uListEntry + 120 * ( nIdx & 0x1FF ) );
         return pEntity;
     }
 };
@@ -62,17 +42,17 @@ public:
 
     const bool m_bHasDefuser( )
     {
-        return Globals::m_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bHasDefuser );
+        return g_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bHasDefuser );
     }
 
     const bool m_bHasHelmet( )
     {
-        return Globals::m_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bHasHelmet );
+        return g_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bHasHelmet );
     }
 
     const bool m_bHasHeavyArmor( )
     {
-        return Globals::m_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bHasHeavyArmor );
+        return g_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bHasHeavyArmor );
     }
 };
 
@@ -82,73 +62,73 @@ public:
     static CCSPlayerPawn* GetPlayerPawn( std::uint32_t uHandle )
     {
         
-        std::uintptr_t uListEntry = Globals::m_Memory.Read<std::uintptr_t>( Globals::m_uEntityList + 0x8 * ( ( uHandle & 0x7FFF ) >> 9 ) + 16 );
+        std::uintptr_t uListEntry = g_Memory.Read<std::uintptr_t>( Globals::m_uEntityList + 0x8 * ( ( uHandle & 0x7FFF ) >> 9 ) + 16 );
         if (!uListEntry)
             return 0;
 
-        CCSPlayerPawn* pCSPlayerPawn = Globals::m_Memory.Read<CCSPlayerPawn*>( uListEntry + 120 * ( uHandle & 0x1FF ) );
+        CCSPlayerPawn* pCSPlayerPawn = g_Memory.Read<CCSPlayerPawn*>( uListEntry + 120 * ( uHandle & 0x1FF ) );
 
         return pCSPlayerPawn;
     }
 
     CCSPlayer_ItemServices* m_pItemServices( )
     {
-        return reinterpret_cast< CCSPlayer_ItemServices* >( Globals::m_Memory.Read<CCSPlayer_ItemServices*>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_pItemServices ) );
+        return reinterpret_cast< CCSPlayer_ItemServices* >( g_Memory.Read<CCSPlayer_ItemServices*>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_pItemServices ) );
     }
 
     const bool m_bIsScoped( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bIsScoped );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bIsScoped );
     }
 
     const bool m_bIsDefusing( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bIsDefusing );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bIsDefusing );
     }
 
     const int m_ArmorValue( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_ArmorValue );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_ArmorValue );
     }
 
     const int m_iHealth( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iHealth );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iHealth );
     }
 
     const float m_flFlashAlpha( )
     {
-        return Globals::m_Memory.Read<float>( reinterpret_cast< DWORD64 >( this ) + ( Offsets::m_flFlashMaxAlpha - 0x8 ) );
+        return g_Memory.Read<float>( reinterpret_cast< DWORD64 >( this ) + ( Offsets::m_flFlashMaxAlpha - 0x8 ) );
     }
 
     const float m_flFlashMaxAlpha( )
     {
-        return Globals::m_Memory.Read<float>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_flFlashMaxAlpha );
+        return g_Memory.Read<float>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_flFlashMaxAlpha );
     }
 
     const float m_flFlashDuration( )
     {
-        return Globals::m_Memory.Read<float>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_flFlashDuration );
+        return g_Memory.Read<float>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_flFlashDuration );
     }
 
     const Vector m_vOldOrigin( )
     {
-        return Globals::m_Memory.Read<Vector>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_vOldOrigin );
+        return g_Memory.Read<Vector>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_vOldOrigin );
     }
 
     const Vector m_vecCameraPosition( )
     {
-        return Globals::m_Memory.Read<Vector>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_vecLastClipCameraPos );
+        return g_Memory.Read<Vector>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_vecLastClipCameraPos );
     }
 
     const QAngle m_angEyeAngles( )
     {
-        return Globals::m_Memory.Read<QAngle>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_angEyeAngles );
+        return g_Memory.Read<QAngle>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_angEyeAngles );
     }
 
     const EntitySpottedState_t m_entitySpottedState( )
     {
-        return Globals::m_Memory.Read<EntitySpottedState_t>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_entitySpottedState );
+        return g_Memory.Read<EntitySpottedState_t>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_entitySpottedState );
     }
 };
 
@@ -158,27 +138,27 @@ public:
 
     const int m_iAccount( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iAccount );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iAccount );
     }
 
     const int m_iCashSpentThisRound( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iCashSpentThisRound );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iCashSpentThisRound );
     }
 
     const int m_iStartAccount( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iStartAccount );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iStartAccount );
     }
 
     const int m_iTotalCashSpent( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iTotalCashSpent );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iTotalCashSpent );
     }
 
     const int m_nPreviousAccount( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_nPreviousAccount );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_nPreviousAccount );
     }
 };
 
@@ -188,18 +168,18 @@ public:
     // get
     const std::uint64_t GetGameSceneNode( )
     {
-        return Globals::m_Memory.Read<std::uint64_t>( reinterpret_cast< std::uint64_t >( this->m_hPlayerPawn( ) ) + Offsets::dwGameSceneNode );
+        return g_Memory.Read<std::uint64_t>( reinterpret_cast< std::uint64_t >( this->m_hPlayerPawn( ) ) + Offsets::dwGameSceneNode );
     }
 
     const Vector GetBonePosition( int index )
     {
-        const std::uint64_t uBoneArray = Globals::m_Memory.Read<std::uint64_t>( this->GetGameSceneNode( ) + Offsets::dwModelState + Offsets::dwBoneMatrix );
-        return Globals::m_Memory.Read<BoneJointData>( uBoneArray + index * sizeof( BoneJointData ) ).m_vecPosition;
+        const std::uint64_t uBoneArray = g_Memory.Read<std::uint64_t>( this->GetGameSceneNode( ) + Offsets::dwModelState + Offsets::dwBoneMatrix );
+        return g_Memory.Read<BoneJointData>( uBoneArray + index * sizeof( BoneJointData ) ).m_vecPosition;
     }
 
     CCSPlayerController_InGameMoneyServices* m_pInGameMoneyServices( )
     {
-        return Globals::m_Memory.Read<CCSPlayerController_InGameMoneyServices*>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_pInGameMoneyServices );
+        return g_Memory.Read<CCSPlayerController_InGameMoneyServices*>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_pInGameMoneyServices );
     }
 
     const std::string m_strSanitizedPlayerName( )
@@ -207,32 +187,32 @@ public:
         std::string sBuffer = { };
         sBuffer.resize( 32 );
 
-        DWORD64 SanitizedPlayerName = Globals::m_Memory.Read<DWORD64>( ( reinterpret_cast< DWORD64 >( this ) + Offsets::m_sSanitizedPlayerName ) );
+        DWORD64 SanitizedPlayerName = g_Memory.Read<DWORD64>( ( reinterpret_cast< DWORD64 >( this ) + Offsets::m_sSanitizedPlayerName ) );
         if (!SanitizedPlayerName)
             return { };
 
-        sBuffer = Globals::m_Memory.ReadString( SanitizedPlayerName );
+        sBuffer = g_Memory.ReadString( SanitizedPlayerName );
         return sBuffer;
     }
 
     const bool m_bPawnIsAlive( )
     {
-        return Globals::m_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bPawnIsAlive );
+        return g_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bPawnIsAlive );
     }
 
     const int m_iTeamNum( )
     {
-        return Globals::m_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iTeamNum );
+        return g_Memory.Read<int>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_iTeamNum );
     }
 
     const  bool m_bIsLocalPlayerController( )
     {
-        return Globals::m_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bIsLocalPlayerController );
+        return g_Memory.Read<bool>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_bIsLocalPlayerController );
     }
 
     CCSPlayerPawn* m_hPlayerPawn( )
     {
-        std::uint32_t uPlayerPawn = Globals::m_Memory.Read<std::uint32_t>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_hPlayerPawn );
+        std::uint32_t uPlayerPawn = g_Memory.Read<std::uint32_t>( reinterpret_cast< DWORD64 >( this ) + Offsets::m_hPlayerPawn );
         return CCSPlayerPawn::GetPlayerPawn( uPlayerPawn );
     }
 };

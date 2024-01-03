@@ -1,11 +1,5 @@
 #pragma once
 
-struct KeyBind_t
-{
-	unsigned int m_iKey = 0;
-	unsigned int m_iMode = 0;
-};
-
 namespace Variables
 {
 	inline int m_iUnloadKey = VK_DELETE;

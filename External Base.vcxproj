@@ -2,16 +2,8 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.props')" />
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug EXE|x64">
-      <Configuration>Debug EXE</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release EXE|x64">
-      <Configuration>Release EXE</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
@@ -29,28 +21,17 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug EXE|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release EXE|x64'">
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -60,31 +41,18 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug EXE|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)</OutDir>
-    <IncludePath>ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>ext\freetype\win64;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug EXE|x64'">
-    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)</OutDir>
-    <IncludePath>ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>ext\stb;ext\json;ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
     <LibraryPath>ext\freetype\win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)</OutDir>
-    <IncludePath>ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>ext\freetype\win64;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release EXE|x64'">
-    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)</OutDir>
-    <IncludePath>ext\imgui;ext\imgui\impl;$(DXSDK_DIR)\Include;ext\freetype\include;$(IncludePath)</IncludePath>
+    <IncludePath>ext\stb;ext\json;ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
     <LibraryPath>ext\freetype\win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -92,21 +60,6 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;_WINDOWS;_WINDLL;%(PreprocessorDefinitions);DLL</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug EXE|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;_WINDOWS;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -135,23 +88,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release EXE|x64'">
-    <ClCompile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;NOMINMAX;_WINDOWS;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -219,14 +155,23 @@
     <ClInclude Include="ext\imgui\imstb_rectpack.h" />
     <ClInclude Include="ext\imgui\imstb_textedit.h" />
     <ClInclude Include="ext\imgui\imstb_truetype.h" />
+    <ClInclude Include="ext\json\json.hpp" />
+    <ClInclude Include="ext\stb\stb_image.h" />
+    <ClInclude Include="ext\stb\stb_sprintf.h" />
+    <ClInclude Include="src\config\Config.h" />
     <ClInclude Include="src\config\Variables.h" />
+    <ClInclude Include="src\Definitions.h" />
+    <ClInclude Include="src\Enums.h" />
     <ClInclude Include="src\features\aimbot\Aimbot.h" />
     <ClInclude Include="src\features\aimbot\Triggerbot.h" />
+    <ClInclude Include="src\features\entities\EntityList.h" />
     <ClInclude Include="src\features\visuals\PlayerESP.h" />
     <ClInclude Include="src\Globals.h" />
     <ClInclude Include="src\gui\Window.h" />
+    <ClInclude Include="src\memory\crypt\FNV1A.h" />
     <ClInclude Include="src\memory\crypt\XorStr.h" />
     <ClInclude Include="src\memory\datatypes\Color.h" />
+    <ClInclude Include="src\memory\datatypes\CUtlHash.h" />
     <ClInclude Include="src\memory\datatypes\CUtlMemory.h" />
     <ClInclude Include="src\memory\datatypes\CUtlVector.h" />
     <ClInclude Include="src\memory\datatypes\Matrix.h" />
@@ -234,12 +179,14 @@
     <ClInclude Include="src\memory\datatypes\Vector.h" />
     <ClInclude Include="src\memory\Memory.h" />
     <ClInclude Include="src\Precompiled.h" />
+    <ClInclude Include="src\utilities\CRT.h" />
     <ClInclude Include="src\utilities\Draw.h" />
     <ClInclude Include="src\utilities\InputSytem.h" />
     <ClInclude Include="src\utilities\Logging.h" />
     <ClInclude Include="src\utilities\Math.h" />
     <ClInclude Include="src\valve\Entity.h" />
     <ClInclude Include="src\valve\Offsets.h" />
+    <ClInclude Include="src\valve\Schema.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ext\imgui\imgui.cpp" />
@@ -249,6 +196,7 @@
     <ClCompile Include="ext\imgui\imgui_widgets.cpp" />
     <ClCompile Include="ext\imgui\impl\imgui_impl_dx11.cpp" />
     <ClCompile Include="ext\imgui\impl\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\config\Config.cpp" />
     <ClCompile Include="src\features\aimbot\Aimbot.cpp" />
     <ClCompile Include="src\features\aimbot\TriggerBot.cpp" />
     <ClCompile Include="src\features\visuals\PlayerESP.cpp" />
@@ -258,6 +206,7 @@
     <ClCompile Include="src\utilities\Draw.cpp" />
     <ClCompile Include="src\utilities\Logging.cpp" />
     <ClCompile Include="src\utilities\Math.cpp" />
+    <ClCompile Include="src\valve\Schema.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\gui\Gui.h" />

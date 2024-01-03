@@ -18,7 +18,7 @@ public:
 private:
 	std::byte pad2[ 0xC ];
 public:
-	std::int32_t m_iTickCount;
+	std::int32_t m_nTickCount;
 	float m_flIntervalPerTick2;
 private:
 	std::byte pad3[ 0x138 ];
@@ -34,7 +34,21 @@ namespace Interfaces
 
 namespace Modules
 {
-	inline std::uintptr_t m_pClient = NULL;
+	inline ModuleInfo_t m_pClient = { NULL, NULL };
+	inline ModuleInfo_t m_pEngine = { NULL, NULL };
+	inline ModuleInfo_t m_pSchemaSystem = { NULL, NULL };
+
+	inline bool GetModule(ModuleInfo_t& pModuleOut, const char* szModule)
+	{
+		pModuleOut = g_Memory.GetModuleAddress(szModule);
+		if (pModuleOut.m_uAddress == NULL || pModuleOut.m_szPath == NULL)
+		{
+			Logging::PushConsoleColor(FOREGROUND_INTENSE_RED);
+			Logging::Print(X("Failed to get module for {}"), szModule);
+			Logging::PopConsoleColor();
+			return false;
+		}
+	}
 }
 
 // class forwarding
@@ -43,14 +57,17 @@ class CCSPlayerPawn;
 
 namespace Globals
 {
-	// global memory access
-	inline Memory m_Memory = Memory{ X( "cs2.exe" )};
 	// original window module
 	inline HMODULE m_hDll = nullptr;
 	// our own window handle
 	inline HWND m_Instance = nullptr;
 	// are we unloading?
 	inline bool m_bIsUnloading = false;
+
+	// current tick
+	inline int	m_nCurrentTick = 0;
+	// previous tick
+	inline int	m_nPreviousTick = 0;
 
 	// pointer to local player controller
 	inline CCSPlayerController* m_pLocalPlayerController = nullptr;
