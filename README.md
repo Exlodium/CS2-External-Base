@@ -2,16 +2,38 @@
 A simple free to use CS2 external cheat base
 
 # About
-This is my first public project, I've decided to share a stripped down version of my external cheat as a learning example for other people interested in making CS2 cheats.
-From my limited play testing the cheat does not seem to get you banned, however I can not garuantee safety ( use at your own risk ).
+This is my first public project, I've decided to share a stripped down version of my external cheat as a learning example for other people interested in making CS2 cheats. \
+From my limited play testing the cheat does not seem to get you banned, however I can not garuantee safety ( use at your own risk ). \
 I've based this cheat on the principle of **READ ONLY** in an attempt to stay clear of bans
 
 # How to use
-Both the Release and Debug configuration will generate a .dll file which can be injected into any x64 process, however for those who prefer a stand alone .exe file. There are the build configurations Release EXE and Debug EXE. These configurations will compile a stand alone .exe application file instead.
+Compile as Release or Debug. Either configuration will provide you with a compiled .exe file.
 > [!IMPORTANT]
-> Make sure you don't inject the DLL into CS2, inject it into some other x64 process!
+> Only the Debug build will open a cmd window\
+> Open menu with "INS" / "INSERT", unload with "DEL" / "DELETE"
   
 # Features
+**Basic memory manager**
+- Read memory
+- Write memory
+- IDA style pattern scanner (Credits: mhalaider)
+- Handle Hijack (Credits: Apxaey)
+
+**Schema dumper**
+- Automatically dump all schemas in client.dll (Credits: mhalaider)
+
+**JSON config system**
+- Save and load configurations with easy (Credits: qo0)
+
+**Thread safe ImGui drawlist renderer**
+- Draw most native ImGui drawlist objects with thread safety (Credits: qo0)
+
+**Aimbot**
+- N/A
+
+**Triggerbot**
+- N/A
+
 **ESP**
 - Box ESP
 - Health bar ESP
@@ -29,16 +51,12 @@ Both the Release and Debug configuration will generate a .dll file which can be 
 - Styled to ImGui's dark style by default
 - Keybinds with Hold/Toggle/Always On
 
-**Aimbot**
-- N/A ( might come in the future )
-
-**Triggerbot**
-- N/A ( might come in the future )
-
 # Assets
-[Dear ImGui](https://github.com/ocornut/imgui)
-  [FreeType](https://github.com/ocornut/imgui/tree/master/misc/freetype)
+- [Dear ImGui](https://github.com/ocornut/imgui)
+- [FreeType](https://github.com/ocornut/imgui/tree/master/misc/freetype)
+- [JSON](https://github.com/nlohmann/json)
+- [STB](https://github.com/nothings/stb/tree/master)
 
 # Contacts
-Discord: Exlodium
-  Snapchat: Exlodium
+- Discord: Exlodium
+- Snapchat: Exlodium
