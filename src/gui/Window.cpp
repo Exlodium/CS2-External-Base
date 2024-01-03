@@ -38,22 +38,22 @@ bool Window::Render( )
             bRunning = false;
 
         static bool bToggled = false;
-        if (GetAsyncKeyState( Variables::m_iMenuKey ) & 1 && !bToggled)
+        if (GetAsyncKeyState( Config::Get<int>(g_Variables.m_iMenuKey) ) & 1 && !bToggled)
         {
             Gui::m_bOpen = !Gui::m_bOpen;
             SetForegroundWindow( Globals::m_Instance );
             bToggled = true;
         }
-        else if (!GetAsyncKeyState( Variables::m_iMenuKey ) & 1)
+        else if (!GetAsyncKeyState(Config::Get<int>(g_Variables.m_iMenuKey)) & 1)
         {
             LONG_PTR windowStyle = GetWindowLongPtr( Globals::m_Instance, GWL_EXSTYLE );
             SetWindowLongPtr( Globals::m_Instance, GWL_EXSTYLE, windowStyle | WS_EX_TRANSPARENT );
             bToggled = false;
         }
 
-        if (GetAsyncKeyState( Variables::m_iUnloadKey ) & 1)
+        if (GetAsyncKeyState(Config::Get<int>(g_Variables.m_iUnloadKey)) & 1)
         {
-            return 0;
+            return false;
         }
 
         ImGui_ImplDX11_NewFrame( );

@@ -2,8 +2,8 @@
 
 void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int nIndex )
 {
-	this->m_bSpotted = Variables::Visuals::m_bOnlyWhenSpotted ? pEntity->m_iTeamNum( ) != Globals::m_pLocalPlayerController->m_iTeamNum( ) && pPawn->m_entitySpottedState( ).m_bSpotted : true;
-	if (Variables::Visuals::m_bIgnoreTeammates && pEntity->m_iTeamNum( ) == Globals::m_pLocalPlayerController->m_iTeamNum( ) || !this->m_bSpotted)
+	this->m_bSpotted = Config::Get<bool>(g_Variables.m_bVisualsOnlyWhenSpotted) ? pEntity->m_iTeamNum() != Globals::m_pLocalPlayerController->m_iTeamNum() && pPawn->m_entitySpottedState().m_bSpotted : true;
+	if (Config::Get<bool>(g_Variables.m_bVisualsIgnoreTeammates) && pEntity->m_iTeamNum( ) == Globals::m_pLocalPlayerController->m_iTeamNum( ) || !this->m_bSpotted)
 		return;
 
 	Vector vecEntityOrigin = pPawn->m_vOldOrigin( );
@@ -29,53 +29,53 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int n
 	this->m_arrPadding = { 0.0f, 0.0f, 0.0f, 2.0f };
 	this->m_flSideBarInfoHeightLeft = 0.0f;
 
-	if (Variables::Visuals::m_bBox)
+	if (Config::Get<bool>(g_Variables.m_bBox))
 		DrawBox( 
 			pEntity, 
 			ImVec2( vecScreenHead.x - flWidth, vecScreenHead.y ), 
 			ImVec2( vecScreenHead.x + flWidth, vecScreenFeet.y ),
-			Variables::Visuals::m_colBox,
-			Variables::Visuals::m_colOutline
+			Config::Get<Color>(g_Variables.m_colBox),
+			Config::Get<Color>(g_Variables.m_colOutline)
 		);
 
-	if (Variables::Visuals::m_bHealthBar)
+	if (Config::Get<bool>(g_Variables.m_bHealthBar))
 		DrawHealthBar(
 			pPawn,
 			ImVec2( ( vecScreenHead.x - flWidth ) - 6.0f, vecScreenHead.y - 1.0f ),
 			ImVec2( ( vecScreenHead.x - flWidth ) - 2.0f, vecScreenFeet.y + 1.0f ),
 			Color( 255, 255, 255, 255 ),
-			Variables::Visuals::m_colOutline
+			Config::Get<Color>(g_Variables.m_colOutline)
 		);
 		
-	if (Variables::Visuals::m_bArmorBar)
+	if (Config::Get<bool>(g_Variables.m_bArmorBar))
 		DrawArmorBar(
 			pPawn,
 			ImVec2( ( vecScreenHead.x - flWidth ) - ( this->m_arrPadding.at( DIR_LEFT ) + 4.0f ), vecScreenHead.y - 1.0f ),
 			ImVec2( ( vecScreenHead.x - flWidth ) - this->m_arrPadding.at( DIR_LEFT ), vecScreenFeet.y + 1.0f ),
-			Variables::Visuals::m_colArmorBar,
-			Variables::Visuals::m_colOutline
+			Config::Get<Color>(g_Variables.m_colArmorBar),
+			Config::Get<Color>(g_Variables.m_colOutline)
 		);
 			
-	if (Variables::Visuals::m_bName)
+	if (Config::Get<bool>(g_Variables.m_bName))
 		DrawName( 
 			pEntity, 
 			ImVec2( vecScreenHead.x, vecScreenHead.y ),
 			Color( 255, 255, 255, 255 ),
-			Variables::Visuals::m_colOutline
+			Config::Get<Color>(g_Variables.m_colOutline)
 		);
 
-	if (Variables::Visuals::m_bDistance)
+	if (Config::Get<bool>(g_Variables.m_bDistance))
 		DrawDistance(
 			pPawn, 
 			ImVec2( vecScreenHead.x, vecScreenFeet.y + this->m_arrPadding.at( DIR_BOTTOM ) ),
 			Color( 255, 255, 255, 255 ),
-			Variables::Visuals::m_colOutline
+			Config::Get<Color>(g_Variables.m_colOutline)
 		);
 
-	if (Variables::Visuals::m_bSnapLines)
+	if (Config::Get<bool>(g_Variables.m_bSnapLines))
 		DrawSnapLine( 
 			ImVec2( vecScreenFeet.x, vecScreenFeet.y ), 
-			Variables::Visuals::m_colSnapLines
+			Config::Get<Color>(g_Variables.m_colSnapLines)
 		);
 
 	DrawFlags(
@@ -83,7 +83,7 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int n
 		pPawn,
 		ImVec2( vecScreenHead.x + flWidth + 2.0f, vecScreenHead.y ),
 		Color( 255, 255, 255, 255 ),
-		Variables::Visuals::m_colOutline
+		Config::Get<Color>(g_Variables.m_colOutline)
 	);
 }
 
@@ -176,7 +176,7 @@ void CPlayerESP::DrawFlags( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn,
 	// create our flagObject
 	FlagObjects_t flagObjects{ pItemServices->m_bHasHelmet( ), pItemServices->m_bHasHeavyArmor( ), pItemServices->m_bHasDefuser( ), pPawn->m_bIsScoped( ), pPawn->m_bIsDefusing( ), this->m_bFlashed, pInGameMoneyServices->m_iAccount( ) };
 
-	if (Variables::Visuals::m_arrFlags[ 0 ])
+	if (Config::Get<std::vector<bool>>(g_Variables.m_vecFlags).at(FLAG_MONEY))
 	{
 		const std::string strText = std::to_string( flagObjects.m_iMoney ).append( X( "$" ) );
 		const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
@@ -184,7 +184,7 @@ void CPlayerESP::DrawFlags( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn,
 		iFlagsHeight += vecTextSize.y - 2.0f;
 	}
 
-	if (Variables::Visuals::m_arrFlags[ 1 ] && this->m_bArmored)
+	if (Config::Get<std::vector<bool>>(g_Variables.m_vecFlags).at(FLAG_ARMOR) && this->m_bArmored)
 	{
 		if (flagObjects.m_bHasHeavyArmor)
 		{
@@ -202,7 +202,7 @@ void CPlayerESP::DrawFlags( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn,
 		}
 	}
 
-	if (Variables::Visuals::m_arrFlags[ 2 ] && flagObjects.m_bHasDefuser)
+	if (Config::Get<std::vector<bool>>(g_Variables.m_vecFlags).at(FLAG_KIT) && flagObjects.m_bHasDefuser)
 	{
 		const std::string strText = X( "KIT" );
 		const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
@@ -210,7 +210,7 @@ void CPlayerESP::DrawFlags( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn,
 		iFlagsHeight += vecTextSize.y - 2.0f;
 	}
 
-	if (Variables::Visuals::m_arrFlags[ 3 ] && flagObjects.m_bIsDefusing)
+	if (Config::Get<std::vector<bool>>(g_Variables.m_vecFlags).at(FLAG_DEFUSING) && flagObjects.m_bIsDefusing)
 	{
 		const std::string strText = X( "DEFUSING" );
 		const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
@@ -218,7 +218,7 @@ void CPlayerESP::DrawFlags( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn,
 		iFlagsHeight += vecTextSize.y - 2.0f;
 	}
 
-	if (Variables::Visuals::m_arrFlags[ 4 ] && flagObjects.m_bIsScoping)
+	if (Config::Get<std::vector<bool>>(g_Variables.m_vecFlags).at(FLAG_ZOOM) && flagObjects.m_bIsScoping)
 	{
 		const std::string strText = X( "ZOOM" );
 		const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );

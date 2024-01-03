@@ -146,6 +146,7 @@
     <ClInclude Include="ext\freetype\include\freetype\tttables.h" />
     <ClInclude Include="ext\freetype\include\freetype\tttags.h" />
     <ClInclude Include="ext\freetype\include\ft2build.h" />
+    <ClInclude Include="ext\imgui\cpp\imgui_stdlib.h" />
     <ClInclude Include="ext\imgui\imconfig.h" />
     <ClInclude Include="ext\imgui\imgui.h" />
     <ClInclude Include="ext\imgui\imgui_freetype.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="src\valve\Schema.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ext\imgui\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="ext\imgui\imgui.cpp" />
     <ClCompile Include="ext\imgui\imgui_draw.cpp" />
     <ClCompile Include="ext\imgui\imgui_freetype.cpp" />

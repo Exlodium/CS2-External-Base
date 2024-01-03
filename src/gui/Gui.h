@@ -202,7 +202,7 @@ namespace Gui
 			colColor->Set( col[ 0 ], col[ 1 ], col[ 2 ], col[ 3 ] );
 	}
 
-	inline bool MultiCombo( const char* label, const char* items[ ], bool v[ ], int size )
+	inline bool MultiComboBox(const char* label, const char* items[], std::vector<bool>& v, int size)
 	{
 		ImGuiContext& g = *GImGui;
 		ImGuiWindow* pWindow = g.CurrentWindow;
@@ -213,41 +213,41 @@ namespace Gui
 		const ImGuiStyle& style = g.Style;
 
 		std::string szBuffer;
-		const ImVec2 vecLabelSize = ImGui::CalcTextSize( label );
-		float flActiveWidth = ImGui::CalcItemWidth( ) - ( style.ItemInnerSpacing.x + ImGui::GetFrameHeight( ) ) - 10.f;
+		const ImVec2 vecLabelSize = ImGui::CalcTextSize(label);
+		float flActiveWidth = ImGui::CalcItemWidth() - (style.ItemInnerSpacing.x + ImGui::GetFrameHeight()) - 10.f;
 
 		for (int i = 0; i < size; i++)
 		{
-			if (v[ i ])
+			if (v[i])
 			{
-				ImVec2 vecTextSize = ImGui::CalcTextSize( szBuffer.c_str( ) );
+				ImVec2 vecTextSize = ImGui::CalcTextSize(szBuffer.c_str());
 
-				if (szBuffer.empty( ))
-					szBuffer.assign( items[ i ] );
+				if (szBuffer.empty())
+					szBuffer.assign(items[i]);
 				else
-					szBuffer.append( ", " ).append( items[ i ] );
+					szBuffer.append(X(", ")).append(items[i]);
 
 				if (vecTextSize.x > flActiveWidth)
-					szBuffer.erase( szBuffer.find_last_of( "," ) ).append( "..." );
+					szBuffer.erase(szBuffer.find_last_of(X(","))).append(X("..."));
 			}
 		}
 
-		if (szBuffer.empty( ))
-			szBuffer.assign( "-" );
+		if (szBuffer.empty())
+			szBuffer.assign(X("None"));
 
 		bool bValueChanged = false;
-		if (ImGui::BeginCombo( label, szBuffer.c_str( ) ))
+		if (ImGui::BeginCombo(label, szBuffer.c_str()))
 		{
 			for (int i = 0; i < size; i++)
 			{
-				if (ImGui::Selectable( items[ i ], v[ i ], ImGuiSelectableFlags_DontClosePopups ))
+				if (ImGui::Selectable(items[i], v[i], ImGuiSelectableFlags_DontClosePopups))
 				{
-					v[ i ] = !v[ i ];
+					v[i] = !v[i];
 					bValueChanged = true;
 				}
 			}
 
-			ImGui::EndCombo( );
+			ImGui::EndCombo();
 		}
 
 		return bValueChanged;

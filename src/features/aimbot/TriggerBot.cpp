@@ -2,12 +2,12 @@
 
 void CTriggerBot::UpdateValues( )
 {
-	this->m_iTriggerDelay = Variables::TriggerBot::m_iTriggerBotDelay;
+	this->m_iTriggerDelay = Config::Get<int>(g_Variables.m_iTriggerBotDelay);
 }
 
 void CTriggerBot::Run( )
 {
-	if (!Input::HandleInput( Variables::TriggerBot::m_iTriggerBotkey ))
+	if (!Input::HandleInput( Config::Get<KeyBind_t>(g_Variables.m_TriggerBotKey) ))
 	{
 		this->m_TriggerTimer.Reset( );
 		return;

@@ -1,48 +1,57 @@
 #pragma once
 
-namespace Variables
+enum EVisualsInfoFlags : unsigned int
 {
-	inline int m_iUnloadKey = VK_DELETE;
-	inline int m_iMenuKey = VK_INSERT;
+	FLAG_MONEY = 0,
+	FLAG_ARMOR,
+	FLAG_KIT,
+	FLAG_ZOOM,
+	FLAG_DEFUSING,
+	INFO_FLAG_MAX
+};
 
-	namespace Visuals
-	{
-		inline bool m_bEnabled = false;
-		inline bool m_bIgnoreTeammates = true;
-		inline bool m_bOnlyWhenSpotted = false;
+class CVariables
+{
+public:
+	// Visuals start
+	C_ADD_VARIABLE(int, m_iMenuKey, VK_INSERT);
+	C_ADD_VARIABLE(int, m_iUnloadKey, VK_DELETE);
 
-		inline bool m_bBox = false;
-		inline Color m_colBox = Color( 255, 255, 255, 255 );
-		inline Color m_colOutline = Color( 0, 0, 0, 255 );
-		
-		inline bool m_bHealthBar = false;
-		
-		inline bool m_bArmorBar = false;
-		inline Color m_colArmorBar = Color( 0, 120, 255, 255 );
-		
-		inline bool m_bName = false;
-		inline bool m_bDistance = false;
+	C_ADD_VARIABLE(bool, m_bEnableVisuals, false);
+	C_ADD_VARIABLE(bool, m_bVisualsIgnoreTeammates, true);
+	C_ADD_VARIABLE(bool, m_bVisualsOnlyWhenSpotted, false);
 
-		inline bool m_bSnapLines = false;
-		inline Color m_colSnapLines = Color( 255, 255, 255, 255 );
+	C_ADD_VARIABLE(bool, m_bBox, false);
+	C_ADD_VARIABLE(Color, m_colBox, Color(255, 255, 255, 255));
+	C_ADD_VARIABLE(Color, m_colOutline, Color(0, 0, 0, 255));
 
-		inline bool m_arrFlags[ 5 ] = { false, false, false, false, false };
-	}
+	C_ADD_VARIABLE(bool, m_bHealthBar, false);
 
-	namespace Aimbot
-	{
-		inline bool m_bEnabled = false;
-		
-		inline KeyBind_t m_iAimbotKey = { VK_XBUTTON2, 0 };
-		inline float m_flAimbotFOV = 0.0f;
-		inline float m_flAimbotSmooth = 50.0f;
-	}
+	C_ADD_VARIABLE(bool, m_bArmorBar, false);
+	C_ADD_VARIABLE(Color, m_colArmorBar, Color(0, 120, 255, 255));
 
-	namespace TriggerBot
-	{
-		inline bool m_bEnabled = false;
+	C_ADD_VARIABLE(bool, m_bName, false);
+	C_ADD_VARIABLE(bool, m_bDistance, false);
 
-		inline KeyBind_t m_iTriggerBotkey = { VK_XBUTTON2, 0 };
-		inline int m_iTriggerBotDelay = 200;
-	}
-}
+	C_ADD_VARIABLE(bool, m_bSnapLines, false);
+	C_ADD_VARIABLE(Color, m_colSnapLines, Color(255, 255, 255, 255));
+
+	C_ADD_VARIABLE_VECTOR(bool, INFO_FLAG_MAX, m_vecFlags, false)
+		// Visuals end
+
+		// Aimbot start
+		C_ADD_VARIABLE(bool, m_bEnableAimBot, false);
+	C_ADD_VARIABLE(KeyBind_t, m_AimBotKey, KeyBind_t(VK_XBUTTON2, 0));
+
+	C_ADD_VARIABLE(float, m_flAimbotFOV, 0.0f);
+	C_ADD_VARIABLE(float, m_flAimbotSmooth, 50.0f);
+	// Aimbot end
+
+	// Triggerbot start
+	C_ADD_VARIABLE(bool, m_bEnableTriggerbot, false);
+	C_ADD_VARIABLE(KeyBind_t, m_TriggerBotKey, KeyBind_t(VK_XBUTTON2, 0));
+	C_ADD_VARIABLE(int, m_iTriggerBotDelay, 200);
+	// Triggerbot end
+};
+
+inline CVariables g_Variables;

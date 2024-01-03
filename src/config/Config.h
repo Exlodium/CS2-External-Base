@@ -8,6 +8,11 @@
 
 struct KeyBind_t
 {
+	KeyBind_t() = default;
+	
+	explicit KeyBind_t(const unsigned int iKey, const unsigned int iMode)
+		: m_iKey(iKey), m_iMode(iMode) { }
+
 	unsigned int m_iKey = 0;
 	unsigned int m_iMode = 0;
 };

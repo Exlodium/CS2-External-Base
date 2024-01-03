@@ -96,11 +96,11 @@ bool MainLoop(LPVOID lpParameter)
                         continue;
 
                     // aimbot
-                    if (Variables::Aimbot::m_bEnabled)
+                    if (Config::Get<bool>(g_Variables.m_bEnableAimBot))
                         g_AimBot.Run(pController, pPawn);
 
                     // triggerbot
-                    if (Variables::TriggerBot::m_bEnabled)
+                    if (Config::Get<bool>(g_Variables.m_bEnableTriggerbot))
                         g_TriggerBot.Run();
                 }
 
@@ -125,7 +125,7 @@ bool MainLoop(LPVOID lpParameter)
                         continue;
 
                     // esp
-                    if (Variables::Visuals::m_bEnabled)
+                    if (Config::Get<bool>(g_Variables.m_bEnableVisuals))
                         g_PlayerESP.Run(pController, pPawn, object.m_nIndex);
                 }
             }

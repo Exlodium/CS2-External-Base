@@ -42,9 +42,9 @@ public:
 				if (!processName.compare(entry.szExeFile))
 				{
 					pProcessId = entry.th32ProcessID;
-					pProcessHandle = hj::HijackExistingHandle(pProcessId);
+					//pProcessHandle = hj::HijackExistingHandle(pProcessId);
 					// leaving this commented out here incase you have issues with handle hijacking
-					//pProcessHandle = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, pProcessId);
+					pProcessHandle = ::OpenProcess(PROCESS_VM_READ, FALSE, pProcessId);
 					break;
 				}
 			}
