@@ -23,7 +23,7 @@ Compile as Release or Debug. Either configuration will provide you with a compil
 - Automatically dump all schemas in client.dll (Credits: mhalaider)
 
 **JSON config system**
-- Save and load configurations with easy (Credits: qo0)
+- Save and load configurations with ease (Credits: qo0)
 
 **Thread safe ImGui drawlist renderer**
 - Draw most native ImGui drawlist objects with thread safety (Credits: qo0)
