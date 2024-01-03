@@ -3,20 +3,20 @@
 struct ModuleInfo_t
 {
 	ModuleInfo_t() = default;
-	ModuleInfo_t(std::uintptr_t uAddress, const char* szPath)
+	ModuleInfo_t(std::uintptr_t uAddress, std::string strPath)
 	{
 		m_uAddress = uAddress;
-		m_szPath = szPath;
+		m_strPath = strPath;
 	}
 
 	~ModuleInfo_t()
 	{
 		m_uAddress = NULL;
-		m_szPath = NULL;
+		m_strPath = X("");
 	}
 
 	std::uintptr_t m_uAddress = NULL;
-	const char* m_szPath = NULL;
+	std::string m_strPath = X("");
 };
 
 // @Credits: Cazz ( https://github.com/cazzwastaken/pro-bhop/blob/master/cheat/memory.h )
@@ -25,121 +25,125 @@ class CMemory
 private:
 	DWORD pProcessId = 0;
 	void* pProcessHandle = nullptr;
-
 public:
-	CMemory( ) = default;
+	CMemory() = default;
 
-	// Constructor that finds the process id
-	// and opens a handle
-	CMemory( const std::string_view processName ) noexcept
+	// find process handle and process ID
+	void Initialize(const std::string_view processName) noexcept
 	{
-		::PROCESSENTRY32 entry = { };
-		entry.dwSize = sizeof( ::PROCESSENTRY32 );
-
-		const auto snapShot = ::CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
-
-		while (::Process32Next( snapShot, &entry ))
+		while (!pProcessHandle)
 		{
-			if (!processName.compare( entry.szExeFile ))
-			{
-				pProcessId = entry.th32ProcessID;
-				pProcessHandle = ::OpenProcess( PROCESS_ALL_ACCESS, FALSE, pProcessId );
-				break;
-			}
-		}
+			::PROCESSENTRY32 entry = { };
+			entry.dwSize = sizeof(::PROCESSENTRY32);
 
-		// Free handle
-		if (snapShot)
-			::CloseHandle( snapShot );
+			const HANDLE snapShot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+			while (::Process32Next(snapShot, &entry))
+			{
+				if (!processName.compare(entry.szExeFile))
+				{
+					pProcessId = entry.th32ProcessID;
+					//pProcessHandle = hj::HijackExistingHandle(pProcessId);
+					// leaving this commented out here incase you have issues with handle hijacking
+					pProcessHandle = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, pProcessId);
+					break;
+				}
+			}
+
+			// Free handle
+			if (snapShot)
+				::CloseHandle(snapShot);
+		}
 	}
 
-	// Destructor that frees the opened handle
-	~CMemory( )
+	// destructor that frees the opened handle
+	~CMemory()
 	{
 		if (pProcessHandle)
-			::CloseHandle( pProcessHandle );
+			::CloseHandle(pProcessHandle);
+
+		if (hj::HijackedHandle)
+			::CloseHandle(hj::HijackedHandle);
 	}
 
-	// Returns the base address of a module by name
-	const ModuleInfo_t GetModuleAddress( const std::string_view moduleName ) const noexcept
+	// returns the base address of a module by name
+	const ModuleInfo_t GetModuleAddress(const std::string_view moduleName) const noexcept
 	{
 		::MODULEENTRY32 entry = { };
-		entry.dwSize = sizeof( ::MODULEENTRY32 );
+		entry.dwSize = sizeof(::MODULEENTRY32);
+		const auto snapShot = ::CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pProcessId);
 
-		const auto snapShot = ::CreateToolhelp32Snapshot( TH32CS_SNAPMODULE, pProcessId );
+		std::uintptr_t uModuleAddress = NULL;
+		std::string strModulePath = X("");
 
-		ModuleInfo_t result = ModuleInfo_t();
-		while (::Module32Next( snapShot, &entry ))
+		while (::Module32Next(snapShot, &entry))
 		{
-			if (!moduleName.compare( entry.szModule ))
+			if (!moduleName.compare(entry.szModule))
 			{
-				char pBuffer[MAX_PATH + 1];
-				K32GetModuleFileNameExA(pProcessHandle, reinterpret_cast<HMODULE>(entry.modBaseAddr), pBuffer, MAX_PATH);
-				result = ModuleInfo_t(reinterpret_cast< std::uintptr_t >( entry.modBaseAddr ), pBuffer);
+				uModuleAddress = reinterpret_cast<std::uintptr_t>(entry.modBaseAddr);
+				strModulePath = std::string(entry.szExePath);
 				break;
 			}
 		}
 
 		if (snapShot)
-			::CloseHandle( snapShot );
+			::CloseHandle(snapShot);
 
-		return result;
+		return ModuleInfo_t(uModuleAddress, strModulePath);
 	}
 
-	// Read process memory
+	// read process memory
 	template <typename T>
-	constexpr const T Read( const std::uintptr_t& address ) const noexcept
+	constexpr const T Read(const std::uintptr_t& address) const noexcept
 	{
 		T value = { };
-		::ReadProcessMemory( pProcessHandle, reinterpret_cast< const void* >( address ), &value, sizeof( T ), NULL );
+		::ReadProcessMemory(pProcessHandle, reinterpret_cast<const void*>(address), &value, sizeof(T), NULL);
 		return value;
 	}
 
-	const bool ReadRaw( uintptr_t address, void* buffer, size_t size )
+	const bool ReadRaw(uintptr_t address, void* buffer, size_t size)
 	{
 		SIZE_T bytesRead;
-		if (ReadProcessMemory( pProcessHandle, reinterpret_cast< LPCVOID >( address ), buffer, size, &bytesRead ))
+		if (ReadProcessMemory(pProcessHandle, reinterpret_cast<LPCVOID>(address), buffer, size, &bytesRead))
 		{
 			return bytesRead == size;
 		}
 		return false;
 	}
 
-	const std::string ReadString( std::uint64_t dst )
+	const std::string ReadString(std::uint64_t dst)
 	{
 		if (!dst)
-			return X( "**invalid**" );
+			return X("**invalid**");
 
-		char buf[ 256 ] = {};
-		return ( ReadRaw( dst, &buf, sizeof( buf ) ) ? std::string( buf ) : X( "**invalid**" ) );
+		char buf[256] = {};
+		return (ReadRaw(dst, &buf, sizeof(buf)) ? std::string(buf) : X("**invalid**"));
 	}
 
-	DWORD64 TraceAddress( DWORD64 BaseAddress, std::vector<DWORD> Offsets )
+	DWORD64 TraceAddress(DWORD64 BaseAddress, std::vector<DWORD> Offsets)
 	{
 		DWORD64 Address = 0;
 
-		if (Offsets.size( ) == 0)
+		if (Offsets.size() == 0)
 			return BaseAddress;
 
-		Address = Read<DWORD64>( BaseAddress );
-
-		for (int i = 0; i < Offsets.size( ) - 1; i++) {
-			Address = Read<DWORD64>( Address + Offsets[ i ] );
-		}
-		return Address == 0 ? 0 : Address + Offsets[ Offsets.size( ) - 1 ];
+		Address = Read<DWORD64>(BaseAddress);
+		for (int i = 0; i < Offsets.size() - 1; i++)
+			Address = Read<DWORD64>(Address + Offsets[i]);
+		
+		return Address == 0 ? 0 : Address + Offsets[Offsets.size() - 1];
 	}
 
-	//@NOTE: This is not safe, you should avoid using it
-	// Write process memory
+	//@NOTE: this is not safe, you should avoid using it
+	// write process memory
 	template <typename T>
-	constexpr void Write( const std::uintptr_t& address, const T& value ) const noexcept
+	constexpr void Write(const std::uintptr_t& address, const T& value) const noexcept
 	{
-		::WriteProcessMemory( pProcessHandle, reinterpret_cast< void* >( address ), &value, sizeof( T ), NULL );
+		::WriteProcessMemory(pProcessHandle, reinterpret_cast<void*>(address), &value, sizeof(T), NULL);
 	}
 
 	std::uintptr_t PatternScan(void* module, const char* szSignature)
 	{
-		static auto PatternToBytes = [](const char* szPattern) 
+		static auto PatternToBytes = [](const char* szPattern)
 		{
 			auto vecBytes = std::vector<int>{};
 			auto szStart = const_cast<char*>(szPattern);
@@ -150,48 +154,45 @@ public:
 				if (*szCurrent == '?')
 				{
 					++szCurrent;
-					
+
 					if (*szCurrent == '?')
 						++szCurrent;
-					
+
 					vecBytes.push_back(-1);
 				}
-				else 
-				{
+				else
 					vecBytes.push_back(strtoul(szCurrent, &szCurrent, 16));
-				}
 			}
 			return vecBytes;
 		};
 
-		auto dosHeader = (PIMAGE_DOS_HEADER)module;
-		auto ntHeaders = (PIMAGE_NT_HEADERS)((std::uint8_t*)module + dosHeader->e_lfanew);
+		PIMAGE_DOS_HEADER dosHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(module);
+		PIMAGE_NT_HEADERS ntHeaders = reinterpret_cast<PIMAGE_NT_HEADERS>(reinterpret_cast<std::uint8_t*>(module) + dosHeader->e_lfanew);
 
-		auto dwSizeOfImage = ntHeaders->OptionalHeader.SizeOfImage;
-		auto vecPatternBytes = PatternToBytes(szSignature);
-		auto uScanBytes = reinterpret_cast<std::uint8_t*>(module);
+		DWORD dwSizeOfImage = ntHeaders->OptionalHeader.SizeOfImage;
+		std::vector<int> vecPatternBytes = PatternToBytes(szSignature);
+		std::uint8_t* uScanBytes = reinterpret_cast<std::uint8_t*>(module);
 
-		auto s = vecPatternBytes.size();
-		auto d = vecPatternBytes.data();
+		size_t uSize = vecPatternBytes.size();
+		int* pData = vecPatternBytes.data();
 
-		for (auto i = 0ul; i < dwSizeOfImage - s; ++i)
+		for (unsigned long i = 0ul; i < dwSizeOfImage - uSize; ++i)
 		{
 			bool bFound = true;
-			for (auto j = 0ul; j < s; ++j) 
+			for (unsigned long j = 0ul; j < uSize; ++j)
 			{
-				if (uScanBytes[i + j] != d[j] && d[j] != -1)
+				if (uScanBytes[i + j] != pData[j] && pData[j] != -1)
 				{
-
 					bFound = false;
 					break;
 				}
 			}
+			
 			if (bFound)
-			{
 				return reinterpret_cast<std::uintptr_t>(&uScanBytes[i]);
-			}
 		}
-		return 0;
+		
+		return NULL;
 	}
 
 	template <typename T = std::uintptr_t>

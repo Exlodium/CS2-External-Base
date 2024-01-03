@@ -3,7 +3,7 @@
 class CAimBot
 {
 public:
-	void Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn );
+	void Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn );
 private:
 	// functions
 	void UpdateValues( );

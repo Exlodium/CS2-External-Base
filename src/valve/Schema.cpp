@@ -20,14 +20,14 @@ bool Schema::Setup(const wchar_t* wszFileName)
 	std::tm timePoint;
 	localtime_s(&timePoint, &time);
 
-	CRT::String_t<64> szTimeBuffer(X("[%d-%m-%Y %T] RyzeXTR | schema dump\n\n"), &timePoint);
+	CRT::String_t<64> szTimeBuffer(X("[%d-%m-%Y %T] External Base | schema dump\n\n"), &timePoint);
 
 	// write current date, time and info
 	::WriteFile(hOutFile, szTimeBuffer.Data(), szTimeBuffer.Length(), nullptr, nullptr);
 
 	// Getting base address of interface
-	HMODULE hSchemaSystemDLL = LoadLibraryExA(Modules::m_pSchemaSystem.m_szPath, 0, DONT_RESOLVE_DLL_REFERENCES);
-	std::uintptr_t ptrToBaseInterface = Modules::m_pSchemaSystem.m_uAddress + (g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hSchemaSystemDLL, X("48 8D 05 ? ? ? ? C3 CC CC CC CC CC CC CC CC 48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 4C 89 74 24 ?")), 0x3, 0x7) - reinterpret_cast<std::uintptr_t >(hSchemaSystemDLL));
+	HMODULE hSchemaSystemDLL = LoadLibraryExA(Modules::m_pSchemaSystem.m_strPath.c_str(), 0, DONT_RESOLVE_DLL_REFERENCES);
+	std::uintptr_t ptrToBaseInterface = Modules::m_pSchemaSystem.m_uAddress + (g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hSchemaSystemDLL, X("48 8D 05 ? ? ? ? C3 CC CC CC CC CC CC CC CC 48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 4C 89 74 24 ?")), 0x3, 0x7) - reinterpret_cast<std::uintptr_t>(hSchemaSystemDLL));
 	FreeLibrary(hSchemaSystemDLL);
 	
 	// Getting 51's element's address in _this ptr. This just some offset for CSchemaSystem class by Valv3
@@ -41,13 +41,12 @@ bool Schema::Setup(const wchar_t* wszFileName)
 	Logging::Print(X("found: {} schema classes in module"), pTable.Count());
 	Logging::PopConsoleColor();
 
-	auto pElements = std::make_unique_for_overwrite< UtlTSHashHandle_t[] >(pTable.Count());
-	const auto nElements = pTable.GetElements(0, pTable.Count(), pElements.get());
+	std::unique_ptr<UtlTSHashHandle_t[]> pElements = std::make_unique_for_overwrite< UtlTSHashHandle_t[] >(pTable.Count());
+	const int nElements = pTable.GetElements(0, pTable.Count(), pElements.get());
 
 	for (int nElementIndex = 0; nElementIndex < nElements; nElementIndex++)
 	{
 		const UtlTSHashHandle_t hElement = pElements[nElementIndex];
-
 		if (!hElement)
 			continue;
 
@@ -85,7 +84,7 @@ bool Schema::Setup(const wchar_t* wszFileName)
 		Logging::PopConsoleColor();
 	}
 
-	return true;
+	return vecSchemaData.size() >= 1;
 }
 
 std::uint32_t Schema::GetOffset(const FNV1A_t uHashedFieldName)

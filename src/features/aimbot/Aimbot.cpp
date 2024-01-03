@@ -6,7 +6,7 @@ void CAimBot::UpdateValues( )
     this->m_flFOV = Variables::Aimbot::m_flAimbotFOV;
 }
 
-void CAimBot::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn )
+void CAimBot::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn )
 {
     if (!Input::HandleInput( Variables::Aimbot::m_iAimbotKey ))
         return;

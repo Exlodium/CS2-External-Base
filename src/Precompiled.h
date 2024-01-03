@@ -67,9 +67,11 @@
 #include "utilities/CRT.h"
 
 // memory
+#include "memory/HandleHijack.h"
 #include "memory/Memory.h"
-#include "memory/datatypes/Matrix.h"
 #include "memory/datatypes/Vector.h"
+#include "memory/datatypes/Matrix.h"
+#include "memory/datatypes/Quaternion.h"
 #include "memory/datatypes/QAngle.h"
 #include "memory/datatypes/Color.h"
 #include "memory/datatypes/CUtlVector.h"

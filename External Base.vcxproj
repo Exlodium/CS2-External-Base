@@ -176,7 +176,9 @@
     <ClInclude Include="src\memory\datatypes\CUtlVector.h" />
     <ClInclude Include="src\memory\datatypes\Matrix.h" />
     <ClInclude Include="src\memory\datatypes\QAngle.h" />
+    <ClInclude Include="src\memory\datatypes\Quaternion.h" />
     <ClInclude Include="src\memory\datatypes\Vector.h" />
+    <ClInclude Include="src\memory\HandleHijack.h" />
     <ClInclude Include="src\memory\Memory.h" />
     <ClInclude Include="src\Precompiled.h" />
     <ClInclude Include="src\utilities\CRT.h" />
@@ -200,15 +202,18 @@
     <ClCompile Include="src\features\aimbot\Aimbot.cpp" />
     <ClCompile Include="src\features\aimbot\TriggerBot.cpp" />
     <ClCompile Include="src\features\visuals\PlayerESP.cpp" />
+    <ClCompile Include="src\Globals.cpp" />
     <ClCompile Include="src\gui\Gui.cpp" />
     <ClCompile Include="src\gui\Window.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\memory\datatypes\Vector.cpp" />
     <ClCompile Include="src\utilities\Draw.cpp" />
     <ClCompile Include="src\utilities\Logging.cpp" />
     <ClCompile Include="src\utilities\Math.cpp" />
     <ClCompile Include="src\valve\Schema.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="src\gui\Gui.h" />
   </ItemGroup>
   <ItemGroup>

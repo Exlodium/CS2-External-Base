@@ -1,5 +1,4 @@
 #pragma once
-#include "memory/Memory.h"
 
 class IGlobalVars
 {
@@ -34,27 +33,28 @@ namespace Interfaces
 
 namespace Modules
 {
-	inline ModuleInfo_t m_pClient = { NULL, NULL };
-	inline ModuleInfo_t m_pEngine = { NULL, NULL };
-	inline ModuleInfo_t m_pSchemaSystem = { NULL, NULL };
+	inline ModuleInfo_t m_pClient = ModuleInfo_t();
+	inline ModuleInfo_t m_pEngine = ModuleInfo_t();
+	inline ModuleInfo_t m_pSchemaSystem = ModuleInfo_t();
 
-	inline bool GetModule(ModuleInfo_t& pModuleOut, const char* szModule)
+	inline bool GetModule(ModuleInfo_t& pModuleOut, const std::string_view strModule)
 	{
-		pModuleOut = g_Memory.GetModuleAddress(szModule);
-		if (pModuleOut.m_uAddress == NULL || pModuleOut.m_szPath == NULL)
+		pModuleOut = g_Memory.GetModuleAddress(strModule);
+		if (pModuleOut.m_uAddress == NULL || pModuleOut.m_strPath.empty())
 		{
 			Logging::PushConsoleColor(FOREGROUND_INTENSE_RED);
-			Logging::Print(X("Failed to get module for {}"), szModule);
+			Logging::Print(X("Failed to get module for {}"), strModule);
 			Logging::PopConsoleColor();
 			return false;
 		}
+
+		return true;
 	}
 }
 
 // class forwarding
 class CCSPlayerController;
-class CCSPlayerPawn;
-
+class C_CSPlayerPawn;
 namespace Globals
 {
 	// original window module
@@ -64,6 +64,10 @@ namespace Globals
 	// are we unloading?
 	inline bool m_bIsUnloading = false;
 
+	// window width of CS2
+	inline int	m_nCSWindowWidth = 0;
+	// window height of CS2
+	inline int	m_nCSWindowHeight = 0;
 	// current tick
 	inline int	m_nCurrentTick = 0;
 	// previous tick
@@ -72,9 +76,11 @@ namespace Globals
 	// pointer to local player controller
 	inline CCSPlayerController* m_pLocalPlayerController = nullptr;
 	// pointer to local player pawn ( casted from player controller )
-	inline CCSPlayerPawn* m_pLocalPlayerPawn = nullptr;
+	inline C_CSPlayerPawn* m_pLocalPlayerPawn = nullptr;
 	// global entity list access point
 	inline std::uintptr_t m_uEntityList = NULL;
+	
+	bool UpdateGlobals();
 }
 
 class CTimer

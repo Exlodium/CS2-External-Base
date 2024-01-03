@@ -1,13 +1,13 @@
 #include "../../Precompiled.h"
 
-void CPlayerESP::Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nIndex )
+void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int nIndex )
 {
 	this->m_bSpotted = Variables::Visuals::m_bOnlyWhenSpotted ? pEntity->m_iTeamNum( ) != Globals::m_pLocalPlayerController->m_iTeamNum( ) && pPawn->m_entitySpottedState( ).m_bSpotted : true;
 	if (Variables::Visuals::m_bIgnoreTeammates && pEntity->m_iTeamNum( ) == Globals::m_pLocalPlayerController->m_iTeamNum( ) || !this->m_bSpotted)
 		return;
 
 	Vector vecEntityOrigin = pPawn->m_vOldOrigin( );
-	Vector vecHead = pEntity->GetBonePosition( EBones::HEAD );
+	Vector vecHead = pPawn->GetBonePosition( EBones::HEAD );
 	if (vecEntityOrigin.IsZero( ) || vecHead.IsZero( ))
 		return;
 
@@ -92,7 +92,7 @@ void CPlayerESP::DrawBox( CCSPlayerController* pEntity, ImVec2 vecMin, ImVec2 ve
 	Draw::AddRect( vecMin, vecMax, colColor, DRAW_RECT_OUTLINE | DRAW_RECT_BORDER | DRAW_RECT_ALIGNED, colOutline );
 }
 
-void CPlayerESP::DrawHealthBar( CCSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
+void CPlayerESP::DrawHealthBar( C_CSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
 {
 	const int iHealth = pPawn->m_iHealth( );
 	const float flFactor = static_cast< float >( iHealth ) * 0.01f;
@@ -112,7 +112,7 @@ void CPlayerESP::DrawHealthBar( CCSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecM
 	this->m_arrPadding.at( DIR_LEFT ) += 7.0f;
 }
 
-void CPlayerESP::DrawArmorBar( CCSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
+void CPlayerESP::DrawArmorBar( C_CSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
 {
  	if ( !this->m_bArmored )
 		return;
@@ -142,7 +142,7 @@ void CPlayerESP::DrawName( CCSPlayerController* pEntity, ImVec2 vecPosition, Col
 	this->m_arrPadding.at( DIR_TOP ) += vecNameSize.y;
 }
 
-void CPlayerESP::DrawDistance( CCSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline )
+void CPlayerESP::DrawDistance( C_CSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline )
 {
 	const Vector vecLocalOrigin = Globals::m_pLocalPlayerPawn->m_vOldOrigin( );
 	const Vector vecEntityOrigin = pPawn->m_vOldOrigin( );
@@ -165,7 +165,7 @@ void CPlayerESP::DrawSnapLine( ImVec2 vecPosition, Color colColor )
 	Draw::AddLine( ImVec2( static_cast<float>( Window::m_iWidth ) * 0.5f, static_cast< float >( Window::m_iHeight ) * 0.5f ), vecPosition, colColor, 1.0f );
 }
 
-void CPlayerESP::DrawFlags( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline )
+void CPlayerESP::DrawFlags( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline )
 {
 	CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices( );
 	CCSPlayerController_InGameMoneyServices* pInGameMoneyServices = pEntity->m_pInGameMoneyServices( );

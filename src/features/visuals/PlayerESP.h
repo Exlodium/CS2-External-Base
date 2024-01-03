@@ -37,16 +37,16 @@ struct FlagObjects_t
 class CPlayerESP
 {
 public:
-	void Run( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, int nIndex );
+	void Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int nIndex );
 private:
 	// functions
 	void DrawBox( CCSPlayerController* pEntity, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
-	void DrawHealthBar( CCSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
-	void DrawArmorBar( CCSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
+	void DrawHealthBar( C_CSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
+	void DrawArmorBar( C_CSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline );
 	void DrawName( CCSPlayerController* pEntity, ImVec2 vecPosition, Color colColor, Color colOutline );
-	void DrawDistance( CCSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline );
+	void DrawDistance( C_CSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline );
 	void DrawSnapLine( ImVec2 vecPosition, Color colColor );
-	void DrawFlags( CCSPlayerController* pEntity, CCSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline );
+	void DrawFlags( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline );
 
 	std::array<float, DIR_MAX> m_arrPadding = { 0, 0, 0, 0 };
 	

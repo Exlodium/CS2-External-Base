@@ -8,12 +8,12 @@ enum EEntityType : unsigned int
 
 struct EntityObject_t
 {
-	EntityObject_t(CBaseEntity* pEntity, int nIndex, EEntityType eEntityType) :
+	EntityObject_t(C_BaseEntity* pEntity, int nIndex, EEntityType eEntityType) :
 		m_pEntity(pEntity), m_nIndex(nIndex), m_eType(eEntityType) { }
 
-	CBaseEntity* m_pEntity = nullptr;
-	int				        m_nIndex = 0;
-	EEntityType		        m_eType = EEntityType::ENTITY_INVALID;
+	C_BaseEntity*	m_pEntity = nullptr;
+	int				m_nIndex = 0;
+	EEntityType		m_eType = EEntityType::ENTITY_INVALID;
 };
 
 namespace EntityList
@@ -29,17 +29,17 @@ namespace EntityList
 		// skip first entity, it's always world
 		for (int nIndex = 1; nIndex < Interfaces::m_GlobalVariables.m_nMaxClients; nIndex++)
 		{
-			CBaseEntity* pBaseEntity = CBaseEntity::GetBaseEntity(nIndex);
+			C_BaseEntity* pBaseEntity = C_BaseEntity::GetBaseEntity(nIndex);
 			if (!pBaseEntity)
 				continue;
 
-			/*if (pBaseEntity->GetSchemaName() == X("CCSPlayerController"))
+			if (pBaseEntity->GetSchemaName() == X("CCSPlayerController"))
 			{
 				m_vecEntities.emplace_back(EntityObject_t(pBaseEntity, nIndex, EEntityType::ENTITY_PLAYER));
 				continue;
 			}
 			else
-				continue;*/ // undesired entity, just skip them
+				continue; // undesired entity, just skip them
 		}
 	}
 }
