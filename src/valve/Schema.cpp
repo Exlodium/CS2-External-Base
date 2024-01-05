@@ -5,7 +5,7 @@
 struct SchemaData_t
 {
 	FNV1A_t m_uHashedFieldName = 0x0ULL;
-	std::uint32_t m_uOffset = 0x0U;
+	std::uintptr_t m_uOffset = 0x0U;
 };
 
 static std::vector<SchemaData_t> vecSchemaData;
@@ -87,7 +87,7 @@ bool Schema::Setup(const wchar_t* wszFileName)
 	return vecSchemaData.size() >= 1;
 }
 
-std::uint32_t Schema::GetOffset(const FNV1A_t uHashedFieldName)
+std::uintptr_t Schema::GetOffset(const FNV1A_t uHashedFieldName)
 {
 	if (const auto it = std::ranges::find_if(vecSchemaData, [uHashedFieldName](const SchemaData_t& data) { return data.m_uHashedFieldName == uHashedFieldName; }); it != vecSchemaData.end())
 		return it->m_uOffset;

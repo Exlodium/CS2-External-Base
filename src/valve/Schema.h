@@ -76,5 +76,11 @@ namespace Schema
 	/* @section: get */
 	// get offset of the field in the class
 	// @note: only client.dll class & fields
-	[[nodiscard]] std::uint32_t GetOffset(const FNV1A_t uHashedFieldName);
+	[[nodiscard]] std::uintptr_t GetOffset(const FNV1A_t uHashedFieldName);
+}
+
+#define SCHEMA(TYPE, NAME, VARIABLE) \
+[[nodiscard]] TYPE NAME() noexcept { \
+    static std::uintptr_t uOffset = Schema::GetOffset(FNV1A::Hash(VARIABLE)); \
+    return g_Memory.Read<TYPE>(reinterpret_cast<std::uintptr_t>(this) + uOffset); \
 }
