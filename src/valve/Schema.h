@@ -79,8 +79,18 @@ namespace Schema
 	[[nodiscard]] std::uintptr_t GetOffset(const FNV1A_t uHashedFieldName);
 }
 
-#define SCHEMA(TYPE, NAME, VARIABLE) \
-[[nodiscard]] TYPE NAME() noexcept { \
+#define ADD_SCHEMA(TYPE, NAME, VARIABLE, ADDITIONAL) \
+[[nodiscard]] __forceinline TYPE NAME() noexcept { \
     static std::uintptr_t uOffset = Schema::GetOffset(FNV1A::Hash(VARIABLE)); \
-    return g_Memory.Read<TYPE>(reinterpret_cast<std::uintptr_t>(this) + uOffset); \
+    return g_Memory.Read<TYPE>(reinterpret_cast<std::uintptr_t>(this) + uOffset + ADDITIONAL); \
 }
+
+#define ADD_OFFSET(TYPE, NAME, OFFSET) \
+[[nodiscard]] __forceinline TYPE NAME() noexcept { \
+	static std::uintptr_t uOffset = OFFSET; \
+	return g_Memory.Read<TYPE>(reinterpret_cast<std::uintptr_t>(this) + uOffset); \
+}
+
+#define SCHEMA_OFFSET(TYPE, NAME, FIELD, ADDITIONAL) ADD_SCHEMA(TYPE, NAME, FIELD, ADDITIONAL)
+#define SCHEMA(TYPE, NAME, FIELD) ADD_SCHEMA(TYPE, NAME, FIELD, 0U)
+#define OFFSET(TYPE, NAME, OFFSET) ADD_OFFSET(TYPE, NAME, OFFSET)

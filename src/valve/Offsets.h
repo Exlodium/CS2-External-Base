@@ -39,6 +39,7 @@ namespace Offsets
         std::uintptr_t uClientBaseAddress = reinterpret_cast<std::uintptr_t>(hClientDLL);
         std::uintptr_t uEngine2BaseAddress = reinterpret_cast<std::uintptr_t>(hEngine2DLL);
 
+        // @TODO: Fix me
         // get entity list
         //Client::dwEntityList = Modules::m_pClient.m_uAddress + (g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hClientDLL, Signatures::EntityList), 0x3, 0x7) - uClientBaseAddress);
         //// get local player controller
@@ -59,12 +60,12 @@ namespace Offsets
         // get view matrix
         Client::dwViewMatrix = Modules::m_pClient.m_uAddress + 0x1820150;
         // get global variables
-        Client::dwGlobalVars = Modules::m_pClient.m_uAddress + 0x16BDC98;
+        Client::dwGlobalVars = Modules::m_pClient.m_uAddress + 0x16BDCB8;
 
         // get window width
-        Engine2::dwWindowWidth = Modules::m_pEngine.m_uAddress + 0x596E18;
+        Engine2::dwWindowWidth = Modules::m_pEngine.m_uAddress + 0x597E08;
         // get window height
-        Engine2::dwWindowHeight = Modules::m_pEngine.m_uAddress + 0x596E1C;
+        Engine2::dwWindowHeight = Modules::m_pEngine.m_uAddress + 0x597E0C;
 
         if (hClientDLL)
             FreeLibrary(hClientDLL);
