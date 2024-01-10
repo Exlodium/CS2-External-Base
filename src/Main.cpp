@@ -77,7 +77,7 @@ bool MainLoop(LPVOID lpParameter)
             }
             
             // update current tick
-            Globals::m_nCurrentTick = Interfaces::m_GlobalVariables.m_nTickCount;
+            Globals::m_nCurrentTick = Globals::m_pLocalPlayerController->m_nTickBase();
             // run only if tick changed
             if (Globals::m_nCurrentTick != Globals::m_nPreviousTick)
             {
