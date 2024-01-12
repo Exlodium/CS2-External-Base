@@ -204,10 +204,12 @@ public:
 		return pRelativeAddress;
 	}
 
-	std::uintptr_t ResolveRelativeAddress(std::uintptr_t nAddressBytes, std::uint32_t nRVAOffset, std::uint32_t nRIPOffset)
-	{
-		std::uintptr_t nRVA = *reinterpret_cast<PLONG>(nAddressBytes + nRVAOffset);
-		std::uintptr_t nRIP = nAddressBytes + nRIPOffset;
+	std::uintptr_t ResolveRelativeAddress( std::uintptr_t nAddressBytes, std::uint32_t nRVAOffset, std::uint32_t nRIPOffset, std::uint32_t nOffset = 0 ) {
+		const std::uintptr_t nRVA = *reinterpret_cast< PLONG >( nAddressBytes + nRVAOffset );
+		const std::uintptr_t nRIP = nAddressBytes + nRIPOffset;
+
+		if ( nOffset )
+			return Read< std::uintptr_t >( nRVA + nRIP ) + nOffset;
 
 		return nRVA + nRIP;
 	}

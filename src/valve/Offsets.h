@@ -81,9 +81,7 @@ namespace Offsets {
             Logging::PopConsoleColor( );
         }
 
-        std::ptrdiff_t ret = g_Memory.ResolveRelativeAddress( g_Memory.PatternScan( hClientDLL, X( "48 8B 0D ? ? ? ? E9 ? ? ? ? CC CC CC CC 40 55" ) ), 0x3, 0x7 );
-        ret = g_Memory.Read<uint64_t>( ret ) + 24896; // 24896 is our add value
-        Client::dwViewAngles = ret - Modules::m_pClient.m_uAddress;
+        Client::dwViewAngles = g_Memory.ResolveRelativeAddress( g_Memory.PatternScan( hClientDLL, X( "48 8B 0D ? ? ? ? E9 ? ? ? ? CC CC CC CC 40 55" ) ), 0x3, 0x7, 24896 );
         // check if viewangles is invalid
         if ( !Client::dwViewAngles ) {
             Logging::PushConsoleColor( FOREGROUND_INTENSE_RED );
