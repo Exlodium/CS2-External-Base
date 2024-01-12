@@ -41,7 +41,8 @@ bool MainLoop(LPVOID lpParameter)
             throw std::runtime_error(X("failed to dump schemas"));
 
         // update offsets from sigs
-        Offsets::GetOffsets();
+        if (!Offsets::Setup())
+			throw std::runtime_error(X("failed to setup offsets"));
 
         // create our window
         if (!Window::m_bInitialized)
