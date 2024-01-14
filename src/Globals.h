@@ -64,10 +64,6 @@ namespace Globals
 	// are we unloading?
 	inline bool m_bIsUnloading = false;
 
-	// window width of CS2
-	inline int	m_nCSWindowWidth = 0;
-	// window height of CS2
-	inline int	m_nCSWindowHeight = 0;
 	// current tick
 	inline int	m_nCurrentTick = 0;
 	// previous tick

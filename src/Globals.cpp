@@ -6,7 +6,7 @@ bool Globals::UpdateGlobals()
 	Globals::m_pLocalPlayerPawn = Globals::m_pLocalPlayerController->m_hPlayerPawn();
 	Globals::m_uEntityList = g_Memory.Read<std::uintptr_t>(Offsets::Client::dwEntityList);
 
-	if (!Globals::m_pLocalPlayerController || !Globals::m_pLocalPlayerPawn || Globals::m_uEntityList == NULL || Globals::m_nCSWindowWidth == NULL || Globals::m_nCSWindowHeight == NULL)
+	if (!Globals::m_pLocalPlayerController || !Globals::m_pLocalPlayerPawn || Globals::m_uEntityList == NULL)
 		return false;
 
 	return true;
