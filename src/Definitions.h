@@ -1,9 +1,9 @@
 #pragma once
 
-#define CLIENT_DLL constexpr X("client.dll")
-#define ENGINE2_DLL constexpr X("engine2.dll")
-#define NAVSYSTEM_DLL constexpr X("navsystem.dll")
-#define SCHEMASYSTEM_DLL constexpr X( "schemasystem.dll" )
+#define CLIENT_DLL X("client.dll")
+#define ENGINE2_DLL X("engine2.dll")
+#define NAVSYSTEM_DLL X("navsystem.dll")
+#define SCHEMASYSTEM_DLL X( "schemasystem.dll" )
 
 #define TICK_INTERVAL (Interfaces::m_GlobalVariables.m_flIntervalPerTick)
 #define TIME_TO_TICKS(TIME) (static_cast<int>(0.5f + static_cast<float>(TIME) / TICK_INTERVAL))

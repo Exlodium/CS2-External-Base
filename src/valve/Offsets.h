@@ -18,7 +18,6 @@ namespace Offsets
     {
         auto FindOffsetFromSignature = [ & ]( std::ptrdiff_t& pReturnOffset, std::uintptr_t uAddress, std::uintptr_t uModuleBaseAddress, std::uintptr_t uWantedModuleAddress ) -> bool
         {
-            
             pReturnOffset = uWantedModuleAddress + ( uAddress - uModuleBaseAddress );
             if (!pReturnOffset)
             {

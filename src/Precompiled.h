@@ -77,6 +77,7 @@
 #include "memory/datatypes/Color.h"
 #include "memory/datatypes/CUtlVector.h"
 #include "memory/datatypes/CUtlHash.h"
+#include "memory/datatypes/CBaseHandle.h"
 
 // configs
 #include "config/Config.h"

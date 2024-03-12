@@ -92,7 +92,7 @@ bool MainLoop(LPVOID lpParameter)
                     if (!pController || !pController->m_bPawnIsAlive() || pController->m_bIsLocalPlayerController())
                         continue;
 
-                    C_CSPlayerPawn* pPawn = pController->m_hPlayerPawn();
+                    C_CSPlayerPawn* pPawn = pController->m_hPlayerPawn().Get();
                     if (!pPawn)
                         continue;
 
@@ -121,7 +121,7 @@ bool MainLoop(LPVOID lpParameter)
                     if (!pController || !pController->m_bPawnIsAlive() || pController->m_bIsLocalPlayerController())
                         continue;
 
-                    C_CSPlayerPawn* pPawn = pController->m_hPlayerPawn();
+                    C_CSPlayerPawn* pPawn = pController->m_hPlayerPawn().Get();
                     if (!pPawn)
                         continue;
 
@@ -156,6 +156,8 @@ bool MainLoop(LPVOID lpParameter)
         FreeLibraryAndExitThread(static_cast<HMODULE>(lpParameter), EXIT_FAILURE);
 #endif
     }
+
+    return 0;
 }
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInstance, LPSTR pArgs, int iCmdShow)

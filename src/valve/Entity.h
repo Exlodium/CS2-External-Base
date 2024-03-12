@@ -60,15 +60,39 @@ public:
         sBuffer = g_Memory.ReadString(pDesignerName);
         return sBuffer;
     }
+
+    [[nodiscard]] bool IsValid()
+    {
+        return nIndex() != INVALID_EHANDLE_INDEX;
+    }
+
+    [[nodiscard]] int GetEntryIndex()
+    {
+        if (!IsValid())
+            return ENT_ENTRY_MASK;
+
+        return nIndex() & ENT_ENTRY_MASK;
+    }
+
+    [[nodiscard]] int GetSerialNumber()
+    {
+        return nIndex() >> NUM_SERIAL_NUM_SHIFT_BITS;
+    }
+
+    OFFSET(std::uint32_t, nIndex, 0x10);
+    SCHEMA(std::uint32_t, m_flags, "CEntityIdentity->m_flags");
 };
 
 class CEntityInstance
 {
 public:
-    CEntityIdentity* m_pEntityIdentity() noexcept
+    [[nodiscard]] CBaseHandle GetRefEHandle()
     {
-        CEntityIdentity* pEntityIdentity = g_Memory.Read<CEntityIdentity*>(reinterpret_cast<DWORD64>(this) + 0x10);
-        return pEntityIdentity;
+        CEntityIdentity* pIdentity = m_pEntity();
+        if (!pIdentity)
+            return CBaseHandle();
+
+        return CBaseHandle(pIdentity->GetEntryIndex(), pIdentity->GetSerialNumber() - (pIdentity->m_flags() & 1));
     }
 
     std::string GetSchemaName()
@@ -87,18 +111,20 @@ public:
 
         return strSchemaName;
     }
+
+    OFFSET(CEntityIdentity*, m_pEntity, 0x10)
 };
 
 class C_BaseEntity : public CEntityInstance
 {
 public:
-    static C_BaseEntity* GetBaseEntity(std::int32_t nIdx )
+    static C_BaseEntity* GetBaseEntity(int nIdx) noexcept
     {
-        std::uintptr_t uListEntry = g_Memory.Read<std::uint64_t>( Globals::m_uEntityList + ( 0x8 * ( nIdx & 0x7FFF ) >> 9 ) + 16 );
-        if( !uListEntry )
+        std::uintptr_t uListEntry = g_Memory.Read<std::uint64_t>(Globals::m_uEntityList + (0x8 * ((nIdx & 0x7FFF) >> 0x9)) + 0x10);
+        if (!uListEntry)
             return 0;
 
-        C_BaseEntity* pEntity = g_Memory.Read<C_BaseEntity*>( uListEntry + 120 * ( nIdx & 0x1FF ) );
+        C_BaseEntity* pEntity = g_Memory.Read<C_BaseEntity*>(uListEntry + 0x78 * (nIdx & 0x1FF));
         return pEntity;
     }
 
@@ -238,15 +264,10 @@ public:
         sBuffer = g_Memory.ReadString(SanitizedPlayerName);
         return sBuffer;
     }
-
-    C_CSPlayerPawn* m_hPlayerPawn() noexcept
-    {
-        static std::uint32_t uOffset = Schema::GetOffset(FNV1A::Hash("CCSPlayerController->m_hPlayerPawn"));
-        std::uint32_t uPlayerPawn = g_Memory.Read<std::uint32_t>(reinterpret_cast<DWORD64>(this) + uOffset);
-        return C_CSPlayerPawn::GetPlayerPawn(uPlayerPawn);
-    }
 public:
     SCHEMA(bool, m_bPawnIsAlive, "CCSPlayerController->m_bPawnIsAlive");
     
     SCHEMA(CCSPlayerController_InGameMoneyServices*, m_pInGameMoneyServices, "CCSPlayerController->m_pInGameMoneyServices");
+
+    SCHEMA(CHandle<C_CSPlayerPawn>, m_hPlayerPawn, "CCSPlayerController->m_hPlayerPawn");
 };
