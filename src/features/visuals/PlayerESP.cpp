@@ -53,11 +53,6 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int n
 	if (Config::Get<bool>(g_Variables.m_bVisualsIgnoreTeammates) && pEntity->m_iTeamNum( ) == Globals::m_pLocalPlayerController->m_iTeamNum( ) || !this->m_bSpotted)
 		return;
 
-	CCollisionProperty* pCollision = pPawn->m_pCollision();
-	if (pCollision == nullptr)
-		return;
-
-	const bool bUseCustomMinMax = !pEntity->m_bPawnIsAlive();
 	m_Context = { };
 	if (!GetEntityBoundingBox(pPawn, &m_Context.m_Box))
 		return;
