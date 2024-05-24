@@ -1,39 +1,77 @@
 #include "../../Precompiled.h"
 
+bool GetEntityBoundingBox(C_BaseEntity* pEntity, Box_t* pBox)
+{
+	CCollisionProperty* pCollision = pEntity->m_pCollision();
+	if (pCollision == nullptr)
+		return false;
+
+	CGameSceneNode* pGameSceneNode = pEntity->m_pGameSceneNode();
+	if (pGameSceneNode == nullptr)
+		return false;
+
+	CTransform nodeToWorldTransform = pGameSceneNode->m_nodeToWorld();
+	const Matrix3x4_t matTransform = nodeToWorldTransform.m_quatOrientation.ToMatrix(nodeToWorldTransform.m_vecPosition);
+
+	const Vector vecMins = pCollision->m_vecMins();
+	const Vector vecMaxs = pCollision->m_vecMaxs();
+
+	float flLeft = std::numeric_limits<float>::max();
+	float flTop = std::numeric_limits<float>::max();
+	float flRight = std::numeric_limits<float>::lowest();
+	float flBottom = std::numeric_limits<float>::lowest();
+
+	for (int i = 0; i < 8; ++i)
+	{
+		const Vector vecPoint{
+			i & 1 ? vecMaxs.x : vecMins.x,
+			i & 2 ? vecMaxs.y : vecMins.y,
+			i & 4 ? vecMaxs.z : vecMins.z
+		};
+		ImVec2 vecScreen;
+		if (!Draw::WorldToScreen(vecPoint.Transform(matTransform), vecScreen))
+			return false;
+
+		flLeft = std::min(flLeft, vecScreen.x);
+		flTop = std::min(flTop, vecScreen.y);
+		flRight = std::max(flRight, vecScreen.x);
+		flBottom = std::max(flBottom, vecScreen.y);
+	}
+
+	pBox->m_flLeft = flLeft;
+	pBox->m_flTop = flTop;
+	pBox->m_flRight = flRight;
+	pBox->m_flBottom = flBottom;
+	pBox->m_flWidth = flRight - flLeft;
+	pBox->m_flHeight = flBottom - flTop;
+	return true;
+}
+
 void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int nIndex )
 {
 	this->m_bSpotted = Config::Get<bool>(g_Variables.m_bVisualsOnlyWhenSpotted) ? pEntity->m_iTeamNum() != Globals::m_pLocalPlayerController->m_iTeamNum() && pPawn->m_entitySpottedState().m_bSpotted : true;
 	if (Config::Get<bool>(g_Variables.m_bVisualsIgnoreTeammates) && pEntity->m_iTeamNum( ) == Globals::m_pLocalPlayerController->m_iTeamNum( ) || !this->m_bSpotted)
 		return;
 
-	Vector vecEntityOrigin = pPawn->m_vOldOrigin( );
-	Vector vecHead = pPawn->GetBonePosition( EBones::HEAD );
-	if (vecEntityOrigin.IsZero( ) || vecHead.IsZero( ))
+	CCollisionProperty* pCollision = pPawn->m_pCollision();
+	if (pCollision == nullptr)
 		return;
 
-	// cheat the head height a bit for ESP
-	vecHead.z += 7.5f;
-
-	ImVec2 vecScreenHead = ImVec2( 0, 0 );
-	ImVec2 vecScreenFeet = ImVec2( 0, 0 );
-
-	if (!Draw::WorldToScreen( vecHead, vecScreenHead ) || !Draw::WorldToScreen( vecEntityOrigin, vecScreenFeet ))
+	const bool bUseCustomMinMax = !pEntity->m_bPawnIsAlive();
+	m_Context = { };
+	if (!GetEntityBoundingBox(pPawn, &m_Context.m_Box))
 		return;
-
-	// they are on screen
-	const float flHeight = vecScreenFeet.y - vecScreenHead.y;
-	const float flWidth = flHeight * 0.33f;
 
 	this->m_bFlashed = pPawn->m_flFlashAlpha( ) > 0.0f;
 	this->m_bArmored = pPawn->m_ArmorValue( ) > 0;
-	this->m_arrPadding = { 0.0f, 0.0f, 0.0f, 2.0f };
+	this->m_Context.m_arrPadding = { 0.0f, 0.0f, 0.0f, 2.0f };
 	this->m_flSideBarInfoHeightLeft = 0.0f;
 
 	if (Config::Get<bool>(g_Variables.m_bBox))
 		DrawBox( 
 			pEntity, 
-			ImVec2( vecScreenHead.x - flWidth, vecScreenHead.y ), 
-			ImVec2( vecScreenHead.x + flWidth, vecScreenFeet.y ),
+			ImVec2(this->m_Context.m_Box.m_flLeft, this->m_Context.m_Box.m_flTop),
+			ImVec2(this->m_Context.m_Box.m_flRight, this->m_Context.m_Box.m_flBottom),
 			Config::Get<Color>(g_Variables.m_colBox),
 			Config::Get<Color>(g_Variables.m_colOutline)
 		);
@@ -41,8 +79,8 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int n
 	if (Config::Get<bool>(g_Variables.m_bHealthBar))
 		DrawHealthBar(
 			pPawn,
-			ImVec2( ( vecScreenHead.x - flWidth ) - 6.0f, vecScreenHead.y - 1.0f ),
-			ImVec2( ( vecScreenHead.x - flWidth ) - 2.0f, vecScreenFeet.y + 1.0f ),
+			ImVec2(this->m_Context.m_Box.m_flLeft - 6.0f, this->m_Context.m_Box.m_flTop - 1.0f ),
+			ImVec2(this->m_Context.m_Box.m_flLeft - 2.0f, this->m_Context.m_Box.m_flBottom + 1.0f ),
 			Color( 255, 255, 255, 255 ),
 			Config::Get<Color>(g_Variables.m_colOutline)
 		);
@@ -50,8 +88,8 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int n
 	if (Config::Get<bool>(g_Variables.m_bArmorBar))
 		DrawArmorBar(
 			pPawn,
-			ImVec2( ( vecScreenHead.x - flWidth ) - ( this->m_arrPadding.at( DIR_LEFT ) + 4.0f ), vecScreenHead.y - 1.0f ),
-			ImVec2( ( vecScreenHead.x - flWidth ) - this->m_arrPadding.at( DIR_LEFT ), vecScreenFeet.y + 1.0f ),
+			ImVec2(this->m_Context.m_Box.m_flLeft - ( this->m_Context.m_arrPadding.at( DIR_LEFT ) + 4.0f ), this->m_Context.m_Box.m_flTop - 1.0f ),
+			ImVec2(this->m_Context.m_Box.m_flLeft - this->m_Context.m_arrPadding.at( DIR_LEFT ), this->m_Context.m_Box.m_flBottom + 1.0f ),
 			Config::Get<Color>(g_Variables.m_colArmorBar),
 			Config::Get<Color>(g_Variables.m_colOutline)
 		);
@@ -59,7 +97,7 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int n
 	if (Config::Get<bool>(g_Variables.m_bName))
 		DrawName( 
 			pEntity, 
-			ImVec2( vecScreenHead.x, vecScreenHead.y ),
+			ImVec2(this->m_Context.m_Box.m_flLeft + (this->m_Context.m_Box.m_flWidth * 0.5f), this->m_Context.m_Box.m_flTop - 2.0f),
 			Color( 255, 255, 255, 255 ),
 			Config::Get<Color>(g_Variables.m_colOutline)
 		);
@@ -67,21 +105,21 @@ void CPlayerESP::Run( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, int n
 	if (Config::Get<bool>(g_Variables.m_bDistance))
 		DrawDistance(
 			pPawn, 
-			ImVec2( vecScreenHead.x, vecScreenFeet.y + this->m_arrPadding.at( DIR_BOTTOM ) ),
+			ImVec2(this->m_Context.m_Box.m_flLeft + (this->m_Context.m_Box.m_flWidth * 0.5f), this->m_Context.m_Box.m_flBottom + this->m_Context.m_arrPadding.at( DIR_BOTTOM ) ),
 			Color( 255, 255, 255, 255 ),
 			Config::Get<Color>(g_Variables.m_colOutline)
 		);
 
 	if (Config::Get<bool>(g_Variables.m_bSnapLines))
 		DrawSnapLine( 
-			ImVec2( vecScreenFeet.x, vecScreenFeet.y ), 
+			ImVec2(this->m_Context.m_Box.m_flLeft + (this->m_Context.m_Box.m_flWidth * 0.5f), this->m_Context.m_Box.m_flBottom ),
 			Config::Get<Color>(g_Variables.m_colSnapLines)
 		);
 
 	DrawFlags(
 		pEntity,
 		pPawn,
-		ImVec2( vecScreenHead.x + flWidth + 2.0f, vecScreenHead.y ),
+		ImVec2(this->m_Context.m_Box.m_flRight + 2.0f, this->m_Context.m_Box.m_flTop),
 		Color( 255, 255, 255, 255 ),
 		Config::Get<Color>(g_Variables.m_colOutline)
 	);
@@ -109,7 +147,7 @@ void CPlayerESP::DrawHealthBar( C_CSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vec
 		this->m_flSideBarInfoHeightLeft += Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strHealth.c_str( ) ).y;
 	}		
 
-	this->m_arrPadding.at( DIR_LEFT ) += 7.0f;
+	this->m_Context.m_arrPadding.at( DIR_LEFT ) += 7.0f;
 }
 
 void CPlayerESP::DrawArmorBar( C_CSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecMax, Color colColor, Color colOutline )
@@ -131,7 +169,7 @@ void CPlayerESP::DrawArmorBar( C_CSPlayerPawn* pPawn, ImVec2 vecMin, ImVec2 vecM
 		this->m_flSideBarInfoHeightLeft += Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strArmor.c_str( ) ).y;
 	}	
 
-	this->m_arrPadding.at( DIR_LEFT ) += 7.0f;
+	this->m_Context.m_arrPadding.at( DIR_LEFT ) += 7.0f;
 }
 
 void CPlayerESP::DrawName( CCSPlayerController* pEntity, ImVec2 vecPosition, Color colColor, Color colOutline )
@@ -139,7 +177,7 @@ void CPlayerESP::DrawName( CCSPlayerController* pEntity, ImVec2 vecPosition, Col
 	const std::string strName = pEntity->m_strSanitizedPlayerName( );
 	const ImVec2 vecNameSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strName.c_str( ) );
 	Draw::AddText( Fonts::ESP, 10.0f, ImVec2( vecPosition.x - vecNameSize.x * 0.5f, vecPosition.y - vecNameSize.y ), strName.c_str( ), colColor, DRAW_TEXT_OUTLINE, colOutline );
-	this->m_arrPadding.at( DIR_TOP ) += vecNameSize.y;
+	this->m_Context.m_arrPadding.at( DIR_TOP ) += vecNameSize.y;
 }
 
 void CPlayerESP::DrawDistance( C_CSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline )
@@ -157,7 +195,7 @@ void CPlayerESP::DrawDistance( C_CSPlayerPawn* pPawn, ImVec2 vecPosition, Color 
 	const ImVec2 vecDistanceSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
 	Draw::AddText( Fonts::ESP, 10.0f, ImVec2( vecPosition.x - vecDistanceSize.x * 0.5f, vecPosition.y ), strText.c_str( ), colColor, DRAW_TEXT_OUTLINE, colOutline );
 
-	this->m_arrPadding.at( DIR_BOTTOM ) += vecDistanceSize.y;
+	this->m_Context.m_arrPadding.at( DIR_BOTTOM ) += vecDistanceSize.y;
 }
 
 void CPlayerESP::DrawSnapLine( ImVec2 vecPosition, Color colColor )
@@ -195,7 +233,7 @@ void CPlayerESP::DrawFlags( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn,
 		}
 		else
 		{
-			const std::string strText = flagObjects.m_bHasHelmet ? X( "H+K" ) : X( "H" );
+			const std::string strText = flagObjects.m_bHasHelmet ? X( "H+K" ) : X( "K" );
 			const ImVec2 vecTextSize = Fonts::ESP->CalcTextSizeA( 10.0f, FLT_MAX, 0.0f, strText.c_str( ) );
 			Draw::AddText( Fonts::ESP, 10.0f, ImVec2( vecPosition.x, vecPosition.y + iFlagsHeight ), strText.c_str( ), colColor, DRAW_TEXT_OUTLINE, colOutline );
 			iFlagsHeight += vecTextSize.y - 2.0f;

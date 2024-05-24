@@ -9,6 +9,19 @@ enum EPaddingDirection : unsigned int
 	DIR_MAX
 };
 
+struct Box_t
+{
+	float m_flLeft = 0.f, m_flTop = 0.f, m_flRight = 0.f, m_flBottom = 0.f, m_flWidth = 0.f, m_flHeight = 0.f;
+};
+
+struct Context_t
+{
+	// bounding box
+	Box_t m_Box = { };
+	// summary of all directions paddings
+	std::array<float, DIR_MAX> m_arrPadding = { 0, 0, 0, 0 };
+};
+
 struct FlagObjects_t
 {
 	FlagObjects_t( bool bHelmet, bool bHeavy, bool bDefuser, bool bScoping, bool bDefusing, bool bFlashed, int iMoney )
@@ -48,7 +61,7 @@ private:
 	void DrawSnapLine( ImVec2 vecPosition, Color colColor );
 	void DrawFlags( CCSPlayerController* pEntity, C_CSPlayerPawn* pPawn, ImVec2 vecPosition, Color colColor, Color colOutline );
 
-	std::array<float, DIR_MAX> m_arrPadding = { 0, 0, 0, 0 };
+	Context_t m_Context = { };
 	
 	float m_flSideBarInfoHeightLeft = 0.0f;
 	bool m_bFlashed = false;

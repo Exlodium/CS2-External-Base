@@ -183,22 +183,13 @@ public:
 class C_CSPlayerPawnBase : public C_BasePlayerPawn
 {
 public:
-    SCHEMA(bool, m_bIsScoped, "C_CSPlayerPawnBase->m_bIsScoped");
-    SCHEMA(bool, m_bIsWalking, "C_CSPlayerPawnBase->m_bIsWalking");
-    SCHEMA(bool, m_bIsDefusing, "C_CSPlayerPawnBase->m_bIsDefusing");
-
     SCHEMA_OFFSET(float, m_flFlashAlpha, "C_CSPlayerPawnBase->m_flFlashMaxAlpha", -0x8);
     SCHEMA(float, m_flFlashMaxAlpha, "C_CSPlayerPawnBase->m_flFlashMaxAlpha");
     SCHEMA(float, m_flFlashDuration, "C_CSPlayerPawnBase->m_flFlashDuration");
-
-    SCHEMA(std::int32_t, m_iShotsFired, "C_CSPlayerPawnBase->m_iShotsFired");
-    SCHEMA(std::int32_t, m_ArmorValue, "C_CSPlayerPawnBase->m_ArmorValue");
     
     SCHEMA(Vector, m_vecLastClipCameraPos, "C_CSPlayerPawnBase->m_vecLastClipCameraPos");
     
     SCHEMA(QAngle, m_angEyeAngles, "C_CSPlayerPawnBase->m_angEyeAngles");
-    
-    SCHEMA(EntitySpottedState_t, m_entitySpottedState, "C_CSPlayerPawnBase->m_entitySpottedState");
 };
 
 class C_CSPlayerPawn : public C_CSPlayerPawnBase
@@ -228,6 +219,15 @@ public:
         const std::uint64_t uBoneArray = g_Memory.Read<std::uint64_t>(uGameNode + uOffset2 + Offsets::Client::dwBoneMatrix);
         return g_Memory.Read<BoneJointData>(uBoneArray + nIndex * sizeof(BoneJointData)).m_vecPosition;
     }
+
+    SCHEMA(bool, m_bIsScoped, "C_CSPlayerPawn->m_bIsScoped");
+    SCHEMA(bool, m_bIsWalking, "C_CSPlayerPawn->m_bIsWalking");
+    SCHEMA(bool, m_bIsDefusing, "C_CSPlayerPawn->m_bIsDefusing");
+
+    SCHEMA(std::int32_t, m_iShotsFired, "C_CSPlayerPawn->m_iShotsFired");
+    SCHEMA(std::int32_t, m_ArmorValue, "C_CSPlayerPawn->m_ArmorValue");
+
+    SCHEMA(EntitySpottedState_t, m_entitySpottedState, "C_CSPlayerPawn->m_entitySpottedState");
 };
 
 class CCSPlayerController_InGameMoneyServices

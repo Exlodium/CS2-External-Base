@@ -31,7 +31,7 @@ bool Schema::Setup(const wchar_t* wszFileName)
 	FreeLibrary(hSchemaSystemDLL);
 	
 	// Getting 51's element's address in _this ptr. This just some offset for CSchemaSystem class by Valv3
-	std::uintptr_t ptrToListElement = g_Memory.Read<std::uintptr_t>(ptrToBaseInterface + 0x198);
+	std::uintptr_t ptrToListElement = g_Memory.Read<std::uintptr_t>(ptrToBaseInterface + 0x190);
 
 	// Getting our type scope for "client.dll" module
 	CSchemaSystemTypeScope* pTypeScope = g_Memory.Read<CSchemaSystemTypeScope*>(ptrToListElement + (0x10 * 8));
