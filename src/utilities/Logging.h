@@ -57,25 +57,26 @@ namespace Logging
 	void Detach( );
 	// prints given text to the console/file
 	template <typename ... Args_t>
-	void Print( const std::string_view szText, const Args_t& ... argList )
+	void Print(const std::string_view szText, const Args_t& ... argList)
 	{
 		// format time
-		const std::string szTime = std::vformat( X("[{:%d-%m-%Y %X}] "), std::make_format_args(std::chrono::system_clock::now( ) ) );
+		std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+		const std::string szTime = std::vformat(X("[{:%d-%m-%Y %X}] "), std::make_format_args(now));
 
-#ifdef DEBUG_CONSOLE
+		#ifdef DEBUG_CONSOLE
 		// print to console
-		SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ), FOREGROUND_INTENSE_GREEN );
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSE_GREEN);
 		std::cout << szTime;
-		SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ), wConsoleColor );
-		if constexpr (sizeof...( argList ) > 0)
-			std::cout << std::vformat( szText, std::make_format_args( argList... ) ) << std::endl;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), wConsoleColor);
+		if constexpr (sizeof...(argList) > 0)
+			std::cout << std::vformat(szText, std::make_format_args(argList...)) << std::endl;
 		else
 			std::cout << szText << std::endl;
-#else
+
 		// print to file
-		if (ofsFile.is_open( ))
+		if (ofsFile.is_open())
 			ofsFile << szTime << szText << std::endl;
-#endif
+		#endif
 	}
 
 	/*
