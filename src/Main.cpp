@@ -77,9 +77,6 @@ bool MainLoop(LPVOID lpParameter)
                 timer.Reset();
             }
             
-			QAngle angViewAngle = g_Memory.Read<QAngle>(Offsets::Client::dwViewAngles);
-			std::cout << "Viewangle.x: " << angViewAngle.x << " Viewangle.y: " << angViewAngle.y << " Viewangle.z: " << angViewAngle.z << std::endl;
-
             // update current tick
             Globals::m_nCurrentTick = Globals::m_pLocalPlayerController->m_nTickBase();
             // run only if tick changed

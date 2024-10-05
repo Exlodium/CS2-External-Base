@@ -39,8 +39,9 @@ namespace Offsets
         FindOffsetFromSignature(Client::dwEntityList, g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hClientDLL, X("48 8B 0D ? ? ? ? 8B F3")), 0x3, 0x7), uClientAddress, Modules::m_pClient.m_uAddress);
         FindOffsetFromSignature(Client::dwLocalPlayerController, g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hClientDLL, X("48 8B 05 ? ? ? ? 48 85 C0 74 53")), 0x3, 0x7), uClientAddress, Modules::m_pClient.m_uAddress);
         FindOffsetFromSignature(Client::dwGlobalVars, g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hClientDLL, X("48 89 15 ? ? ? ? 48 89 42")), 0x3, 0x7), uClientAddress, Modules::m_pClient.m_uAddress);
-        FindOffsetFromSignature(Client::dwViewMatrix, g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hClientDLL, X("48 63 C2 48 8D 0D ? ? ? ? 48 C1")), 0x3, 0x7), uClientAddress, Modules::m_pClient.m_uAddress);
         FindOffsetFromSignature(Client::dwViewAngles, g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hClientDLL, X("48 8B 0D ? ? ? ? 4C 8B C6 8B 10 E8")), 0x3, 0x7, 0x3D0), uClientAddress, Modules::m_pClient.m_uAddress);
+
+		Client::dwViewMatrix = uClientAddress + 0x1A1DDE0;
 
         // Free the library
         if ( hClientDLL != 0 )
