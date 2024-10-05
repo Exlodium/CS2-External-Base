@@ -3,27 +3,21 @@
 class IGlobalVars
 {
 public:
-	float m_flRealTime;
-	int m_iFrameCount;
-	float m_flAbsoluteFrameTime;
-	float m_flAbsoluteFrameStartTimeStdDev;
-	int m_nMaxClients;
-	float m_flIntervalPerTick;
+	float m_flRealTime; //0x0000
+	int32_t m_nFrameCount; //0x0004
+	float m_flFrameTime; //0x0008
+	float m_flFrameTime2; //0x000C
+	int32_t m_nMaxClients; //0x0010
 private:
-	std::byte pad1[ 0x14 ];
+	char pad0x1c[0x1C];
 public:
-	float m_flCurrentTime;
-	float m_flCurrentTime2;
+	float m_flIntervalPerSubTick; //0x0030
+	float m_flCurrentTime; //0x0034
+	float m_flCurrentTime2; //0x0038
 private:
-	std::byte pad2[ 0xC ];
+	char pad0x14[0x14];
 public:
-	std::int32_t m_nTickCount;
-	float m_flIntervalPerTick2;
-private:
-	std::byte pad3[ 0x138 ];
-public:
-	std::uint64_t m_uCurrentMap;
-	std::uint64_t m_uCurrentMapName;
+	int32_t m_nTickCount; //0x0048
 };
 
 namespace Interfaces
