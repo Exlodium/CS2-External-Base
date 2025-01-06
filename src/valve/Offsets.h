@@ -41,7 +41,7 @@ namespace Offsets
         FindOffsetFromSignature(Client::dwGlobalVars, g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hClientDLL, X("48 89 15 ? ? ? ? 48 89 42")), 0x3, 0x7), uClientAddress, Modules::m_pClient.m_uAddress);
         FindOffsetFromSignature(Client::dwViewAngles, g_Memory.ResolveRelativeAddress(g_Memory.PatternScan(hClientDLL, X("48 8B 0D ? ? ? ? 4C 8B C6 8B 10 E8")), 0x3, 0x7, 0x3D0), uClientAddress, Modules::m_pClient.m_uAddress);
 
-	Client::dwViewMatrix = Modules::m_pClient.m_uAddress + 0x1A1DDE0;
+	Client::dwViewMatrix = Modules::m_pClient.m_uAddress + 0x1A7F610;
 
         // Free the library
         if ( hClientDLL != 0 )
