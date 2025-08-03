@@ -164,14 +164,14 @@ private:
 		HashFixedDataInternal_t< tData >* m_pNext;
 		tData m_Data;
 
-		tData GetData()
+		tData GetData() 
 		{
-			return g_Memory.ReadMemory<tData>(std::uintptr_t(this) + 0x10);
+			return g_Memory.Read< tData >(std::uintptr_t(this) + 0x10);
 		}
 
-		HashFixedDataInternal_t< tData >* GetNext()
+		HashFixedDataInternal_t< tData >* GetNext() 
 		{
-			return g_Memory.ReadMemory<HashFixedDataInternal_t< tData>* >(std::uintptr_t(this) + 0x8);
+			return g_Memory.Read< HashFixedDataInternal_t< tData >* >(std::uintptr_t(this) + 0x8);
 		}
 	};
 

@@ -177,7 +177,7 @@ public:
 	[[nodiscard]] Matrix3x4a_t ConcatTransforms(const Matrix3x4a_t& matOther) const
 	{
 		Matrix3x4a_t matOutput;
-		assert((reinterpret_cast<std::uintptr_t>(this) & 15U) == 0 && (reinterpret_cast<std::uintptr_t>(&matOther) & 15U) == 0 && (reinterpret_cast<std::uintptr_t>(&matOutput) & 15U) == 0); // matrices aren't aligned
+		CS_ASSERT((reinterpret_cast<std::uintptr_t>(this) & 15U) == 0 && (reinterpret_cast<std::uintptr_t>(&matOther) & 15U) == 0 && (reinterpret_cast<std::uintptr_t>(&matOutput) & 15U) == 0); // matrices aren't aligned
 
 		__m128 thisRow0 = _mm_load_ps(this->arrData[0]);
 		__m128 thisRow1 = _mm_load_ps(this->arrData[1]);
