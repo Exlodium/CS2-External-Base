@@ -36,7 +36,6 @@
 
 // directx
 #include <d3d11.h>
-#include <D3D11.h>
 
 // imgui
 #include <imgui.h>
@@ -57,18 +56,11 @@
 #include "memory/crypt/XorStr.h"
 #include "memory/crypt/FNV1A.h"
 
-// logging
-#include "utilities/Logging.h"
-
 // enums and definitions
 #include "Enums.h"
 #include "Definitions.h"
 
-// CRT
-#include "utilities/CRT.h"
-
 // memory
-#include "memory/HandleHijack.h"
 #include "memory/Memory.h"
 #include "memory/datatypes/Vector.h"
 #include "memory/datatypes/Matrix.h"
@@ -79,37 +71,24 @@
 #include "memory/datatypes/CUtlHash.h"
 #include "memory/datatypes/CBaseHandle.h"
 
-// configs
+// interfaces
+#include "valve/interfaces/ISchemaSystem.h"
+
+// config
 #include "config/Config.h"
 #include "config/Variables.h"
 
 // globals
 #include "Globals.h"
 
+#include "valve/SchemaSystem.h"
+#include "valve/Entity.h"
+
 // utilities
 #include "utilities/Math.h"
 
-// valve
-#include "valve/Schema.h"
-#include "valve/Offsets.h"
-#include "valve/Entity.h"
-
-// drawing
-#include "utilities/Draw.h"
-
-// input
-#include "utilities/InputSytem.h"
-
-// entity list
-#include "features/entities/EntityList.h"
-
-// features
-#include "features/visuals/PlayerESP.h"
-#include "features/aimbot/Aimbot.h"
-#include "features/aimbot/Triggerbot.h"
-
-// gui
-#include "gui/Gui.h"
-#include "gui/Window.h"
+// ray tracing for visibility checks
+#include "utilities/RayTrace.h"
+#include "utilities/MapParser.h"
 
 #define WIN32_LEAN_AND_MEAN

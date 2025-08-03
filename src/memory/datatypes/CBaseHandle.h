@@ -15,9 +15,6 @@ public:
 
 	CBaseHandle(const int nEntry, const int nSerial) noexcept
 	{
-		CS_ASSERT(nEntry >= 0 && (nEntry & ENT_ENTRY_MASK) == nEntry);
-		CS_ASSERT(nSerial >= 0 && nSerial < (1 << NUM_SERIAL_NUM_SHIFT_BITS));
-
 		m_nIndex = nEntry | (nSerial << NUM_SERIAL_NUM_SHIFT_BITS);
 	}
 
