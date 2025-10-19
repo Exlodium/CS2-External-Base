@@ -15,11 +15,11 @@
 #define M_RAD2DEG( x )		DirectX::XMConvertToDegrees( x )
 #define M_DEG2RAD( x )		DirectX::XMConvertToRadians( x )
 
-namespace Math
+class CMath
 {
-	void NormalizeAngles( QAngle& angAngles );
-	void VectorAngles( const Vector& vecForward, QAngle& angView );
+public:
+	float GetFOV(QAngle angViewAngle, QAngle angAimAngle);
+	QAngle CalcAngle(const Vector& vecStart, const Vector& vecEnd);
+};
 
-	float GetFOV( const QAngle& angViewAngle, const QAngle& angAimAngle );
-	QAngle CalcAngle( const Vector& vecStart, const Vector& vecEnd );
-}
+inline CMath g_Math;

@@ -195,6 +195,47 @@ public:
 		return { cp * cy, cp * sy, -sp };
 	}
 
+	void ToDirections(Vector* pvecForward, Vector* pvecRight, Vector* pvecUp) const
+	{
+		#ifndef DEG2RAD
+		#define DEG2RAD( x ) ( ( float )( x ) * ( float )( ( float )( 3.14159265358979323846f ) / 180.0f ) )
+		#endif
+
+		float flPitchSin, flPitchCos, flYawSin, flYawCos, flRollSin, flRollCos;
+		
+		flPitchSin = sin(DEG2RAD(this->x));
+		flPitchCos = cos(DEG2RAD(this->x));
+
+		flYawSin = sin(DEG2RAD(this->y));
+		flYawCos = cos(DEG2RAD(this->y));
+
+		flRollSin = sin(DEG2RAD(this->z));
+		flRollCos = cos(DEG2RAD(this->z));
+
+		if (pvecForward != nullptr)
+		{
+			pvecForward->x = flPitchCos * flYawCos;
+			pvecForward->y = flPitchCos * flYawSin;
+			pvecForward->z = -flPitchSin;
+		}
+
+		if (pvecRight != nullptr)
+		{
+			pvecRight->x = (-flRollSin * flPitchSin * flYawCos) + (-flRollCos * -flYawSin);
+			pvecRight->y = (-flRollSin * flPitchSin * flYawSin) + (-flRollCos * flYawCos);
+			pvecRight->z = (-flRollSin * flPitchCos);
+		}
+
+		if (pvecUp != nullptr)
+		{
+			pvecUp->x = (flRollCos * flPitchSin * flYawCos) + (-flRollSin * -flYawSin);
+			pvecUp->y = (flRollCos * flPitchSin * flYawSin) + (-flRollSin * flYawCos);
+			pvecUp->z = (flRollCos * flPitchCos);
+		}
+
+		#undef DEG2RAD
+	}
+
 public:
 	float x, y, z;
 };

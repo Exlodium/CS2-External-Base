@@ -1,218 +1,327 @@
-#pragma once
+﻿#pragma once
 
-struct ModuleInfo_t
+#include <Windows.h>
+#include <TlHelp32.h>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <cstdint>
+#include <iostream>
+
+#define MEM_PAD(SIZE) \
+private: \
+	char _MEM_CONCATENATE(pad_0, __COUNTER__)[SIZE]; \
+public:
+
+#define _MEM_INTERNAL_CONCATENATE(LEFT, RIGHT) LEFT##RIGHT
+#define _MEM_CONCATENATE(LEFT, RIGHT) _MEM_INTERNAL_CONCATENATE(LEFT, RIGHT)
+
+#ifdef __has_builtin
+#define CS_HAS_BUILTIN(BUILTIN) __has_builtin(BUILTIN)
+#else
+#define CS_HAS_BUILTIN(BUILTIN) 0
+#endif
+
+#if defined(_CRT_USE_BUILTIN_OFFSETOF) || CS_HAS_BUILTIN(__builtin_offsetof)
+#define CS_OFFSETOF(STRUCT, MEMBER) __builtin_offsetof(STRUCT, MEMBER)
+#else
+#define CS_OFFSETOF(STRUCT, MEMBER) reinterpret_cast<std::size_t>(std::addressof(static_cast<STRUCT*>(nullptr)->MEMBER))
+#endif
+
+#define BYTE_InRange(x, a, b)	(x >= a && x <= b) 
+#define BYTE_GetBits(x)			(BYTE_InRange((x&(~0x20)),'A','F') ? ((x&(~0x20)) - 'A' + 0xa) : (BYTE_InRange(x,'0','9') ? x - '0' : 0))
+#define BYTE_Get(x)				(BYTE_GetBits(x[0]) << 4 | BYTE_GetBits(x[1]))
+
+struct ModuleInformation_t 
 {
-	ModuleInfo_t() = default;
-	ModuleInfo_t(std::uintptr_t uAddress, std::string strPath)
+	ModuleInformation_t() = default;
+	ModuleInformation_t(std::uintptr_t uBaseAddress, std::string strModulePath, std::uintptr_t uModuleSize)
 	{
-		m_uAddress = uAddress;
-		m_strPath = strPath;
-	}
+		m_uBaseAddress = uBaseAddress;
+		m_strPath = strModulePath;
+		m_uModuleSize = uModuleSize;
+	};
 
-	~ModuleInfo_t()
-	{
-		m_uAddress = NULL;
-		m_strPath = X("");
-	}
+	std::uintptr_t m_uBaseAddress = 0;
+	std::string m_strPath{};
 
-	std::uintptr_t m_uAddress = NULL;
-	std::string m_strPath = X("");
+	std::uintptr_t m_uModuleSize = 0U;
 };
 
-// @Credits: Cazz ( https://github.com/cazzwastaken/pro-bhop/blob/master/cheat/memory.h )
-class CMemory
+enum EPatternScanFlags : std::uint16_t 
 {
-private:
-	DWORD pProcessId = 0;
-	void* pProcessHandle = nullptr;
+	NO_FLAGS = 0U,
+	SCAN_RESOLVE_RIP = (1 << 0),
+	SCAN_RESOLVE_ABS = (1 << 1)
+};
+
+class CMemory 
+{
 public:
 	CMemory() = default;
 
-	// find process handle and process ID
-	void Initialize(const std::string_view processName) noexcept
+	~CMemory()
 	{
-		while (!pProcessHandle)
-		{
-			::PROCESSENTRY32 entry = { };
-			entry.dwSize = sizeof(::PROCESSENTRY32);
+		if (m_pProcessHandle)
+			CloseHandle(m_pProcessHandle);
+	}
 
-			const HANDLE snapShot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-			while (::Process32Next(snapShot, &entry))
+	bool IsWindowInForeground(const char* szWindowName)
+	{
+		static HWND hWnd = FindWindowA(nullptr, szWindowName);
+		if (!hWnd)
+			return false;
+
+		HWND hForegroundWnd = GetForegroundWindow();
+		if (!hForegroundWnd)
+			return false;
+
+		return (hWnd == hForegroundWnd);
+	}
+
+	bool IsGameRunning()
+	{
+		HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, m_pProcessID);
+		if (hProcess != NULL) {
+			CloseHandle(hProcess);
+			return true;
+		}
+
+		return false;
+	}
+
+	void Initialize(const char* szProcessName)
+	{
+		while (!m_pProcessID)
+		{
+			PROCESSENTRY32 entry = {};
+			entry.dwSize = sizeof(PROCESSENTRY32);
+
+			HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+			while (Process32Next(hSnapShot, &entry))
 			{
-				if (!processName.compare(entry.szExeFile))
+				if (!strcmp(szProcessName, entry.szExeFile))
 				{
-					pProcessId = entry.th32ProcessID;
-					//pProcessHandle = hj::HijackExistingHandle(pProcessId);
-					// leaving this commented out here incase you have issues with handle hijacking
-					pProcessHandle = ::OpenProcess(PROCESS_VM_READ, FALSE, pProcessId);
+					m_pProcessID = entry.th32ProcessID;
+					m_pProcessHandle = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE, FALSE, m_pProcessID);
 					break;
 				}
 			}
-
-			// Free handle
-			if (snapShot)
-				::CloseHandle(snapShot);
+			if (hSnapShot)
+				CloseHandle(hSnapShot);
 		}
 	}
 
-	// destructor that frees the opened handle
-	~CMemory()
+	bool ReadMemoryRaw(const std::uintptr_t& uAddress, void* pBuffer, std::size_t uSize)
 	{
-		if (pProcessHandle)
-			::CloseHandle(pProcessHandle);
-
-		if (hj::HijackedHandle)
-			::CloseHandle(hj::HijackedHandle);
+		static tNtReadVirtualMemory NtReadVirtualMemory = reinterpret_cast<tNtReadVirtualMemory>(GetImport(NTDLL_DLL, X("NtReadVirtualMemory")));
+		const NTSTATUS ret = NtReadVirtualMemory(m_pProcessHandle, reinterpret_cast<PVOID>(uAddress), pBuffer, static_cast<ULONG>(uSize), 0);
+		return ret == 0;
 	}
 
-	// returns the base address of a module by name
-	const ModuleInfo_t GetModuleAddress(const std::string_view moduleName) const noexcept
+	bool ReadMemoryRaw(void* pAddress, void* pBuffer, std::size_t uSize)
 	{
-		::MODULEENTRY32 entry = { };
-		entry.dwSize = sizeof(::MODULEENTRY32);
-		const auto snapShot = ::CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pProcessId);
+		static tNtReadVirtualMemory NtReadVirtualMemory = reinterpret_cast<tNtReadVirtualMemory>(GetImport(NTDLL_DLL, X("NtReadVirtualMemory")));
+		const NTSTATUS ret = NtReadVirtualMemory(m_pProcessHandle, pAddress, pBuffer, static_cast<ULONG>(uSize), 0);
+		return ret == 0;
+	}
 
-		std::uintptr_t uModuleAddress = NULL;
-		std::string strModulePath = X("");
+	template<typename T = std::uintptr_t>
+	T ReadMemory(const std::uintptr_t& uAddress)
+	{
+		T buffer{};
+		ReadMemoryRaw(uAddress, &buffer, sizeof(T));
+		return buffer;
+	}
 
-		while (::Module32Next(snapShot, &entry))
+	template<typename T = std::uintptr_t>
+	T ReadMemory(const std::uintptr_t& uBaseAddress, std::vector<std::uintptr_t> vecOffsets)
+	{
+		std::uintptr_t uAddress = ReadMemory<std::uintptr_t>(uBaseAddress);
+		if (vecOffsets.empty())
+			return uAddress;
+
+		for (std::uintptr_t uOffset : vecOffsets)
+			uAddress = ReadMemory<std::uintptr_t>(uAddress + uOffset);
+
+		return uAddress;
+	}
+
+	std::string ReadMemoryString(const std::uintptr_t& uAddress)
+	{
+		char buffer[MAX_PATH]{};
+		ReadMemoryRaw(uAddress, &buffer, sizeof(buffer));
+		return std::string(buffer);
+	}
+
+	template<typename T = std::uintptr_t>
+	void WriteMemory(const std::uintptr_t& uAddress, T value)
+	{
+		static tNtWriteVirtualMemory NtWriteVirtualMemory = reinterpret_cast<tNtWriteVirtualMemory>(GetImport(NTDLL_DLL, X("NtWriteVirtualMemory")));
+		NtWriteVirtualMemory(m_pProcessHandle, reinterpret_cast<PVOID>(uAddress), &value, sizeof(T), nullptr);
+	}
+
+	std::uintptr_t GetImport(const char* szModule, const char* szImport)
+	{
+		FNV1A_t uHash = FNV1A::Hash(szImport);
+		if (m_mapImports.find(uHash) == m_mapImports.end())
 		{
-			if (!moduleName.compare(entry.szModule))
+			HMODULE hModule = GetModuleHandleA(szModule);
+			if (hModule != nullptr)
 			{
-				uModuleAddress = reinterpret_cast<std::uintptr_t>(entry.modBaseAddr);
-				strModulePath = std::string(entry.szExePath);
+				m_mapImports[uHash] = reinterpret_cast<std::uintptr_t>(GetProcAddress(hModule, szImport));
+			}
+		}
+		return m_mapImports[uHash];
+	}
+
+	ModuleInformation_t GetModule(const char* szModuleName)
+	{
+		FNV1A_t uHash = FNV1A::Hash(szModuleName);
+		if (m_mapModules.find(uHash) == m_mapModules.end())
+		{
+			MODULEENTRY32 entry = {};
+			entry.dwSize = sizeof(MODULEENTRY32);
+			const HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, m_pProcessID);
+
+			while (Module32Next(hSnapShot, &entry))
+			{
+				if (!strcmp(szModuleName, entry.szModule))
+				{
+					if (hSnapShot)
+						CloseHandle(hSnapShot);
+
+					m_mapModules[uHash] = { reinterpret_cast<std::uintptr_t>(entry.modBaseAddr), std::string(entry.szExePath), static_cast<std::uintptr_t>(entry.modBaseSize) };
+ 					return m_mapModules[uHash];
+				}
+			}
+
+			if (hSnapShot)
+				CloseHandle(hSnapShot);
+		}
+
+		return m_mapModules[uHash];
+	}
+
+	std::uintptr_t PatterScan(const char* szModuleName, const char* szSignature, uint16_t uFlags = NO_FLAGS, std::uint32_t uOption1 = 0U, std::uint32_t uOption2 = 0U)
+	{
+		ModuleInformation_t moduleInformation = GetModule(szModuleName);
+
+		uint8_t* pModuleBytes = new uint8_t[moduleInformation.m_uModuleSize];
+		if (!ReadMemoryRaw(moduleInformation.m_uBaseAddress, pModuleBytes, moduleInformation.m_uModuleSize))
+		{
+		    std::cout << X("Failed to read module bytes") << std::endl;
+		    return 0U;
+		}
+
+		std::uintptr_t uAddress = FindSignature(reinterpret_cast<std::uintptr_t>(pModuleBytes), moduleInformation.m_uBaseAddress, szSignature);
+		if (uAddress == 0U)
+		{
+			std::cout << X("Failed to find signature in ") << szModuleName << std::endl;
+		    return false;
+		}
+
+		if (uFlags & SCAN_RESOLVE_RIP)
+			uAddress = ResolveRelativeAddress(uAddress, uOption1, uOption2);
+
+		if (uFlags & SCAN_RESOLVE_ABS)
+			uAddress = GetAbsoluteAddress(uAddress, uOption1, uOption2);
+
+		uAddress -= reinterpret_cast<std::uintptr_t>(pModuleBytes);
+		std::uintptr_t uFinalAddress = moduleInformation.m_uBaseAddress + uAddress;
+
+		delete[] pModuleBytes;
+		return uFinalAddress;
+	}
+
+private:
+	bool SignatureIsMatch(std::uint8_t* pAddress, std::uint8_t* pPattern, std::uint8_t* pMask)
+	{
+		std::size_t uIndex = 0U;
+		while (pAddress[uIndex] == pPattern[uIndex] || pMask[uIndex] == (uint8_t)('?'))
+		{
+			if (!pMask[++uIndex])
+				return true;
+		}
+
+		return false;
+	}
+
+	std::uintptr_t FindSignature(uintptr_t uAddress, uintptr_t uSize, const char* szSignature)
+	{
+		std::size_t uSignatureLength = strlen(szSignature);
+
+		std::uint8_t* pPatternAlloc = new std::uint8_t[uSignatureLength >> 1];
+		std::uint8_t* pMaskAlloc = new std::uint8_t[uSignatureLength >> 1];
+		std::uint8_t* pPattern = pPatternAlloc;
+		std::uint8_t* pMask = pMaskAlloc;
+
+		// Run-Time IDA Sig to Sig & Mask
+		std::size_t uPatternLength = 0;
+		while (*szSignature)
+		{
+			if (*szSignature == ' ') szSignature++;
+			if (!*szSignature) break;
+
+			if (*(std::uint8_t*)(szSignature) == (std::uint8_t)('\?'))
+			{
+				*pPattern++ = 0;
+				*pMask++ = '?';
+				szSignature += ((*(std::uint16_t*)(szSignature) == (std::uint16_t)('\?\?')) ? 2 : 1);
+			}
+			else
+			{
+				*pPattern++ = BYTE_Get(szSignature);
+				*pMask++ = 'x';
+				szSignature += 2;
+			}
+
+			++uPatternLength;
+		}
+
+		// Find Address
+		*pMask = 0;
+
+		std::uintptr_t uReturnValue = 0;
+		for (std::uintptr_t i = 0; uSize > i; ++i)
+		{
+			if (SignatureIsMatch(reinterpret_cast<std::uint8_t*>(uAddress + i), pPatternAlloc, pMaskAlloc))
+			{
+				uReturnValue = (uAddress + i);
 				break;
 			}
 		}
 
-		if (snapShot)
-			::CloseHandle(snapShot);
-
-		return ModuleInfo_t(uModuleAddress, strModulePath);
+		delete[] pPatternAlloc;
+		delete[] pMaskAlloc;
+		return uReturnValue;
 	}
 
-	// read process memory
-	template <typename T>
-	constexpr const T Read(const std::uintptr_t& address) const noexcept
+	std::uintptr_t GetAbsoluteAddress(std::uintptr_t uRelativeAddr, std::uint32_t uPreOffset = 0U, std::uint32_t uPostOffset = 0U)
 	{
-		T value = { };
-		::ReadProcessMemory(pProcessHandle, reinterpret_cast<const void*>(address), &value, sizeof(T), NULL);
-		return value;
+		uRelativeAddr += uPreOffset;
+		uRelativeAddr += sizeof(std::int32_t) + *reinterpret_cast<std::int32_t*>(uRelativeAddr);
+		uRelativeAddr += uPostOffset;
+		return uRelativeAddr;
 	}
 
-	const bool ReadRaw(uintptr_t address, void* buffer, size_t size)
+	std::uintptr_t ResolveRelativeAddress(std::uintptr_t uAddressBytes, std::uint32_t uRVAOffset, std::uint32_t uRIPOffset, std::uint32_t uAdditionalOffset = 0U)
 	{
-		SIZE_T bytesRead;
-		if (ReadProcessMemory(pProcessHandle, reinterpret_cast<LPCVOID>(address), buffer, size, &bytesRead))
-		{
-			return bytesRead == size;
-		}
-		return false;
+		const std::uintptr_t uRVA = *reinterpret_cast<PLONG>(uAddressBytes + uRVAOffset);
+		const std::uintptr_t uRIP = uAddressBytes + uRIPOffset;
+
+		if (uAdditionalOffset)
+			return ReadMemory<std::uintptr_t>(uRVA + uRIP) + uAdditionalOffset;
+
+		return uRVA + uRIP;
 	}
 
-	const std::string ReadString(std::uint64_t dst)
-	{
-		if (!dst)
-			return X("**invalid**");
-
-		char buf[256] = {};
-		return (ReadRaw(dst, &buf, sizeof(buf)) ? std::string(buf) : X("**invalid**"));
-	}
-
-	DWORD64 TraceAddress(DWORD64 BaseAddress, std::vector<DWORD> Offsets)
-	{
-		DWORD64 Address = 0;
-
-		if (Offsets.size() == 0)
-			return BaseAddress;
-
-		Address = Read<DWORD64>(BaseAddress);
-		for (int i = 0; i < Offsets.size() - 1; i++)
-			Address = Read<DWORD64>(Address + Offsets[i]);
-		
-		return Address == 0 ? 0 : Address + Offsets[Offsets.size() - 1];
-	}
-
-	//@NOTE: this is not safe, you should avoid using it
-	// write process memory
-	template <typename T>
-	constexpr void Write(const std::uintptr_t& address, const T& value) const noexcept
-	{
-		::WriteProcessMemory(pProcessHandle, reinterpret_cast<void*>(address), &value, sizeof(T), NULL);
-	}
-
-	std::uintptr_t PatternScan(void* module, const char* szSignature)
-	{
-		static auto PatternToBytes = [](const char* szPattern)
-		{
-			auto vecBytes = std::vector<int>{};
-			auto szStart = const_cast<char*>(szPattern);
-			auto szEnd = const_cast<char*>(szPattern) + CRT::StringLength(szPattern);
-
-			for (auto szCurrent = szStart; szCurrent < szEnd; ++szCurrent)
-			{
-				if (*szCurrent == '?')
-				{
-					++szCurrent;
-
-					if (*szCurrent == '?')
-						++szCurrent;
-
-					vecBytes.push_back(-1);
-				}
-				else
-					vecBytes.push_back(strtoul(szCurrent, &szCurrent, 16));
-			}
-			return vecBytes;
-		};
-
-		PIMAGE_DOS_HEADER dosHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(module);
-		PIMAGE_NT_HEADERS ntHeaders = reinterpret_cast<PIMAGE_NT_HEADERS>(reinterpret_cast<std::uint8_t*>(module) + dosHeader->e_lfanew);
-
-		DWORD dwSizeOfImage = ntHeaders->OptionalHeader.SizeOfImage;
-		std::vector<int> vecPatternBytes = PatternToBytes(szSignature);
-		std::uint8_t* uScanBytes = reinterpret_cast<std::uint8_t*>(module);
-
-		size_t uSize = vecPatternBytes.size();
-		int* pData = vecPatternBytes.data();
-
-		for (unsigned long i = 0ul; i < dwSizeOfImage - uSize; ++i)
-		{
-			bool bFound = true;
-			for (unsigned long j = 0ul; j < uSize; ++j)
-			{
-				if (uScanBytes[i + j] != pData[j] && pData[j] != -1)
-				{
-					bFound = false;
-					break;
-				}
-			}
-			
-			if (bFound)
-				return reinterpret_cast<std::uintptr_t>(&uScanBytes[i]);
-		}
-		
-		return NULL;
-	}
-
-	template <typename T = std::uintptr_t>
-	T* GetAbsoluteAddress(T* pRelativeAddress, int nPreOffset = 0x0, int nPostOffset = 0x0)
-	{
-		pRelativeAddress += nPreOffset;
-		pRelativeAddress += sizeof(std::int32_t) + *reinterpret_cast<std::int32_t*>(pRelativeAddress);
-		pRelativeAddress += nPostOffset;
-		return pRelativeAddress;
-	}
-
-	std::uintptr_t ResolveRelativeAddress( std::uintptr_t nAddressBytes, std::uint32_t nRVAOffset, std::uint32_t nRIPOffset, std::uint32_t nOffset = 0 ) {
-		const std::uintptr_t nRVA = *reinterpret_cast< PLONG >( nAddressBytes + nRVAOffset );
-		const std::uintptr_t nRIP = nAddressBytes + nRIPOffset;
-
-		if ( nOffset )
-			return Read< std::uintptr_t >( nRVA + nRIP ) + nOffset;
-
-		return nRVA + nRIP;
-	}
+private:
+	HANDLE m_pProcessHandle = nullptr;
+	DWORD m_pProcessID = 0;
+	
+	std::unordered_map<FNV1A_t, std::uintptr_t> m_mapImports;
+	std::unordered_map<FNV1A_t, ModuleInformation_t> m_mapModules;
 };
 
 inline CMemory g_Memory;

@@ -1,7 +1,7 @@
 #pragma once
-// @credits: https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/public/mathlib/vector.h
 // forward
 struct Matrix3x4_t;
+class QAngle;
 
 class Vector2D
 {
@@ -200,13 +200,16 @@ class Vector
 {
 public:
 	constexpr Vector(float x = 0.f, float y = 0.f, float z = 0.f) :
-		x(x), y(y), z(z) { }
+		x(x), y(y), z(z) {
+	}
 
 	constexpr Vector(const float* arrVector) :
-		x(arrVector[0]), y(arrVector[1]), z(arrVector[2]) { }
+		x(arrVector[0]), y(arrVector[1]), z(arrVector[2]) {
+	}
 
 	constexpr Vector(const Vector2D& vecBase2D) :
-		x(vecBase2D.x), y(vecBase2D.y), z(0.0f) { }
+		x(vecBase2D.x), y(vecBase2D.y), z(0.0f) {
+	}
 
 	[[nodiscard]] bool IsValid() const
 	{
@@ -348,6 +351,12 @@ public:
 		return Vector(this->x / flDivide, this->y / flDivide, this->z / flDivide);
 	}
 
+	// negation-operator.
+	Vector operator-() const
+	{
+		return Vector{ -this->x, -this->y, -this->z };
+	}
+
 	[[nodiscard]] bool IsEqual(const Vector& vecEqual, const float flErrorMargin = std::numeric_limits<float>::epsilon()) const
 	{
 		return (std::fabsf(this->x - vecEqual.x) < flErrorMargin &&
@@ -360,6 +369,13 @@ public:
 		return (std::fpclassify(this->x) == FP_ZERO &&
 			std::fpclassify(this->y) == FP_ZERO &&
 			std::fpclassify(this->z) == FP_ZERO);
+	}
+
+	void Zero()
+	{
+		this->x = 0.0f;
+		this->y = 0.0f;
+		this->z = 0.0f;
 	}
 
 	[[nodiscard]] Vector2D ToVector2D() const
@@ -424,6 +440,26 @@ public:
 		return flLength;
 	}
 
+	Vector NormalizeGarbage() 
+	{
+		Vector vecOut{};
+		float flLength = this->Length();
+
+		if (flLength != 0)
+		{
+			vecOut.x = x / flLength;
+			vecOut.y = y / flLength;
+			vecOut.z = z / flLength;
+		}
+		else 
+		{
+			vecOut.x = vecOut.y = 0.0f;
+			vecOut.z = 1.0f;
+		}
+
+		return vecOut;
+	}
+
 	[[nodiscard]] constexpr float DotProduct(const Vector& vecDot) const
 	{
 		return (this->x * vecDot.x + this->y * vecDot.y + this->z * vecDot.z);
@@ -434,8 +470,23 @@ public:
 		return Vector(this->y * vecCross.z - this->z * vecCross.y, this->z * vecCross.x - this->x * vecCross.z, this->x * vecCross.y - this->y * vecCross.x);
 	}
 
+	[[nodiscard]] float Delta(const Vector& vecOther)
+	{
+		Vector vecDelta = Vector(0, 0, 0);
+
+		vecDelta.x = x - vecOther.x;
+		vecDelta.y = y - vecOther.y;
+		vecDelta.z = z - vecOther.z;
+
+		return vecDelta.Length2D();
+	}
+
+	[[nodiscard]] QAngle ToAngles() const;
+
 	/// @returns: transformed vector by given transformation matrix
 	[[nodiscard]] Vector Transform(const Matrix3x4_t& matTransform) const;
+	// @returns: rotated vector by given transformation matrix
+	[[nodiscard]] Vector Rotate(const Matrix3x4_t& matTransform) const;
 
 public:
 	float x, y, z;
@@ -445,7 +496,8 @@ class Vector4D
 {
 public:
 	constexpr Vector4D(float x = 0.f, float y = 0.f, float z = 0.f, float w = 0.f) :
-		x(x), y(y), z(z), w(w) { }
+		x(x), y(y), z(z), w(w) {
+	}
 
 public:
 	float x, y, z, w;

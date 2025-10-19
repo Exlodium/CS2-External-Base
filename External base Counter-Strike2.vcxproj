@@ -16,8 +16,8 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{c1c47dd6-0dc8-43b7-bf90-f4fc02fcfa2e}</ProjectGuid>
     <RootNamespace>External Base</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>External Base</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <ProjectName>External base Counter-Strike 2</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -30,7 +30,6 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -47,27 +46,32 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)</OutDir>
-    <IncludePath>ext\stb;ext\json;ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>ext\stb;ext\json;ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include</IncludePath>
     <LibraryPath>ext\freetype\win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)</OutDir>
-    <IncludePath>ext\stb;ext\json;ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>ext\stb;ext\json;ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include</IncludePath>
     <LibraryPath>ext\freetype\win64;$(LibraryPath)</LibraryPath>
+    <TargetName>Hozinum</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;_WINDOWS;_WINDLL;%(PreprocessorDefinitions);DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CURL_STATICLIB
+;NOMINMAX;_WINDOWS;_WINDLL;_CRT_SECURE_NO_WARNINGS
+;%(PreprocessorDefinitions);DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -76,11 +80,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;NOMINMAX;_WINDOWS;_WINDLL;%(PreprocessorDefinitions);DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CURL_STATICLIB
+;NOMINMAX;_WINDOWS;_WINDLL;_CRT_SECURE_NO_WARNINGS
+;%(PreprocessorDefinitions);DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -88,9 +96,22 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ext\curl\curl.h" />
+    <ClInclude Include="ext\curl\curlver.h" />
+    <ClInclude Include="ext\curl\easy.h" />
+    <ClInclude Include="ext\curl\header.h" />
+    <ClInclude Include="ext\curl\mprintf.h" />
+    <ClInclude Include="ext\curl\multi.h" />
+    <ClInclude Include="ext\curl\options.h" />
+    <ClInclude Include="ext\curl\stdcheaders.h" />
+    <ClInclude Include="ext\curl\system.h" />
+    <ClInclude Include="ext\curl\typecheck-gcc.h" />
+    <ClInclude Include="ext\curl\urlapi.h" />
+    <ClInclude Include="ext\curl\websockets.h" />
     <ClInclude Include="ext\freetype\include\freetype\config\ftconfig.h" />
     <ClInclude Include="ext\freetype\include\freetype\config\ftheader.h" />
     <ClInclude Include="ext\freetype\include\freetype\config\ftmodule.h" />
@@ -163,34 +184,32 @@
     <ClInclude Include="src\config\Variables.h" />
     <ClInclude Include="src\Definitions.h" />
     <ClInclude Include="src\Enums.h" />
-    <ClInclude Include="src\features\aimbot\Aimbot.h" />
-    <ClInclude Include="src\features\aimbot\Triggerbot.h" />
     <ClInclude Include="src\features\entities\EntityList.h" />
-    <ClInclude Include="src\features\visuals\PlayerESP.h" />
     <ClInclude Include="src\Globals.h" />
-    <ClInclude Include="src\gui\Window.h" />
+    <ClInclude Include="src\gui\Fonts.h" />
+    <ClInclude Include="src\gui\Gui.h" />
     <ClInclude Include="src\memory\crypt\FNV1A.h" />
     <ClInclude Include="src\memory\crypt\XorStr.h" />
     <ClInclude Include="src\memory\datatypes\CBaseHandle.h" />
     <ClInclude Include="src\memory\datatypes\Color.h" />
-    <ClInclude Include="src\memory\datatypes\CUtlHash.h" />
-    <ClInclude Include="src\memory\datatypes\CUtlMemory.h" />
     <ClInclude Include="src\memory\datatypes\CUtlVector.h" />
     <ClInclude Include="src\memory\datatypes\Matrix.h" />
     <ClInclude Include="src\memory\datatypes\QAngle.h" />
     <ClInclude Include="src\memory\datatypes\Quaternion.h" />
     <ClInclude Include="src\memory\datatypes\Vector.h" />
-    <ClInclude Include="src\memory\HandleHijack.h" />
+    <ClInclude Include="src\memory\ImportDefinitions.h" />
     <ClInclude Include="src\memory\Memory.h" />
-    <ClInclude Include="src\Precompiled.h" />
-    <ClInclude Include="src\utilities\CRT.h" />
+    <ClInclude Include="src\Includes.h" />
     <ClInclude Include="src\utilities\Draw.h" />
-    <ClInclude Include="src\utilities\InputSytem.h" />
-    <ClInclude Include="src\utilities\Logging.h" />
+    <ClInclude Include="src\utilities\InputHandler.h" />
+    <ClInclude Include="src\utilities\MapParser.h" />
     <ClInclude Include="src\utilities\Math.h" />
+    <ClInclude Include="src\utilities\RayTrace.h" />
+    <ClInclude Include="src\utilities\Utilities.h" />
     <ClInclude Include="src\valve\Entity.h" />
-    <ClInclude Include="src\valve\Offsets.h" />
-    <ClInclude Include="src\valve\Schema.h" />
+    <ClInclude Include="src\valve\interfaces\ISchemaSystem.h" />
+    <ClInclude Include="src\valve\SchemaSystem.h" />
+    <ClInclude Include="src\window\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ext\imgui\cpp\imgui_stdlib.cpp" />
@@ -202,23 +221,18 @@
     <ClCompile Include="ext\imgui\impl\imgui_impl_dx11.cpp" />
     <ClCompile Include="ext\imgui\impl\imgui_impl_win32.cpp" />
     <ClCompile Include="src\config\Config.cpp" />
-    <ClCompile Include="src\features\aimbot\Aimbot.cpp" />
-    <ClCompile Include="src\features\aimbot\TriggerBot.cpp" />
-    <ClCompile Include="src\features\visuals\PlayerESP.cpp" />
+    <ClCompile Include="src\features\entities\EntityList.cpp" />
     <ClCompile Include="src\Globals.cpp" />
     <ClCompile Include="src\gui\Gui.cpp" />
-    <ClCompile Include="src\gui\Window.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\memory\datatypes\CBaseHandle.cpp" />
     <ClCompile Include="src\memory\datatypes\Vector.cpp" />
     <ClCompile Include="src\utilities\Draw.cpp" />
-    <ClCompile Include="src\utilities\Logging.cpp" />
     <ClCompile Include="src\utilities\Math.cpp" />
-    <ClCompile Include="src\valve\Schema.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="src\gui\Gui.h" />
+    <ClCompile Include="src\utilities\Utilities.cpp" />
+    <ClCompile Include="src\valve\Entity.cpp" />
+    <ClCompile Include="src\valve\SchemaSystem.cpp" />
+    <ClCompile Include="src\window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ext\freetype\win64\freetype.lib" />
@@ -227,11 +241,4 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets')" />
   </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.props'))" />
-    <Error Condition="!Exists('packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets'))" />
-  </Target>
 </Project>
