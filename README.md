@@ -19,7 +19,7 @@ Compile as Release or Debug. Either configuration will provide you with a compil
 - IDA style pattern scanner
 
 **Schema dumper**
-- Automatically dump all schemas in client.dll (Credits: mhalaider)
+- Automatically dump all schemas in client.dll
 
 **JSON config system**
 - Save and load configurations with ease (Credits: qo0)
