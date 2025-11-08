@@ -65,6 +65,7 @@ public:
     }
 };
 
+class CEntityInstance;
 class CEntityIdentity
 {
 public:
@@ -99,6 +100,7 @@ public:
         return strBuffer;
     }
 
+    OFFSET(CEntityInstance*, m_pInstance, 0x0);
     OFFSET(std::uint32_t, nIndex, 0x10);
     SCHEMA(std::uint32_t, m_flags, "CEntityIdentity->m_flags");
 

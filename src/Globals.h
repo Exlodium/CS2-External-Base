@@ -36,12 +36,21 @@ public:
 	int m_nSignonState; 			// 0x0220
 };
 
+class CEntityIdentity;
+class CGameEntitySystem
+{
+public:
+	MEM_PAD(0x218);
+	CEntityIdentity* m_pFirst; 			//0x0218
+};
+
 class CInterfaces
 {
 public:
 	CGlobalVars m_GlobalVars{ };
 	CCSGOInput m_CSGOInput{ };
 	CNetWorkGameClient m_NetworkGameClient{ };
+	CGameEntitySystem m_GameEntitySystem{ };
 	
 	bool Update();
 };
@@ -65,6 +74,7 @@ public:
 		std::uintptr_t m_uGlobalVars = 0U;
 		std::uintptr_t m_uCSGOInput = 0U;
 		std::uintptr_t m_uNetworkGameClient = 0U;
+		std::uintptr_t m_uEntitySystem = 0U;
 		std::uintptr_t m_uSensitivity = 0U;
 	}; Offsets_t m_Offsets;
 

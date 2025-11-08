@@ -7,9 +7,9 @@ void EntityList::UpdateEntities()
 	m_vecEntities.clear();
 
 	// skip first entity, it's always world
-	for (int nIndex = 1; nIndex < 1024; nIndex++)
+	for(CEntityIdentity* pEntity = g_Interfaces.m_GameEntitySystem.m_pFirst; pEntity != nullptr; pEntity = pEntity->m_pNext())
 	{
-		C_BaseEntity* pBaseEntity = C_BaseEntity::GetBaseEntity(nIndex);
+		C_BaseEntity* pBaseEntity = reinterpret_cast<C_BaseEntity*>(pEntity->m_pInstance());
 		if (!pBaseEntity)
 			continue;
 
@@ -18,7 +18,7 @@ void EntityList::UpdateEntities()
 		{
 			case FNV1A::HashConst("CCSPlayerController"):
 			{
-				m_vecEntities.emplace_back(EntityObject_t(pBaseEntity, nIndex, EEntityType::ENTITY_PLAYER));
+				m_vecEntities.emplace_back(EntityObject_t(pBaseEntity, pBaseEntity->GetRefEHandle().GetEntryIndex(), EEntityType::ENTITY_PLAYER));
 				break;
 			}
 		}	
