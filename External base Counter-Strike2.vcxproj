@@ -53,7 +53,7 @@
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)</OutDir>
     <IncludePath>ext\stb;ext\json;ext\freetype\include;ext\imgui\impl;ext\imgui;$(DXSDK_DIR)\Include</IncludePath>
     <LibraryPath>ext\freetype\win64;$(LibraryPath)</LibraryPath>
-    <TargetName>Hozinum</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
