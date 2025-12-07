@@ -13,17 +13,3 @@ constexpr float INTERVAL_PER_TICK = 0.015625f;
 #define TICKS_TO_TIME(TICKS) (INTERVAL_PER_TICK * static_cast<float>(TICKS))
 #define ROUND_TO_TICKS(TIME) (INTERVAL_PER_TICK * TIME_TO_TICKS(TIME))
 #define TICK_NEVER_THINK constexpr (-1)
-
-//#define SECURITY_DEBUG //only enable to debug the security
-#define local_version "0.01"
-
-#ifndef _DEBUG
-#define AUTH
-//#define USE_DRIVER
-#endif
-
-//#ifdef _DEBUG
-//#ifndef COMPILE_BVH
-//#define COMPILE_BVH
-//#endif
-//#endif
