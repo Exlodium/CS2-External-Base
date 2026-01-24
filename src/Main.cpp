@@ -123,7 +123,6 @@ void RenderThread()
             {
                 switch (object.m_eType)
                 {
-
                     case EEntityType::ENTITY_PLAYER:
                     {
                         CCSPlayerController* pController = reinterpret_cast<CCSPlayerController*>(object.m_pEntity);

@@ -25,23 +25,23 @@ public:
 class CCSGOInput
 {
 public:
-	MEM_PAD(0x06B0);				// 0x0000
-	QAngle m_angViewAngle;			// 0x06B0
+	MEM_PAD(0x688);					// 0x0000
+	QAngle m_angViewAngle;			// 0x0688
 };
 
 class CNetWorkGameClient
 {
 public:
-	MEM_PAD(0x220);
-	int m_nSignonState; 			// 0x0220
+	MEM_PAD(0x230);
+	int m_nSignonState; 			// 0x0230
 };
 
 class CEntityIdentity;
 class CGameEntitySystem
 {
 public:
-	MEM_PAD(0x218);
-	CEntityIdentity* m_pFirst; 			//0x0218
+	MEM_PAD(0x210);
+	CEntityIdentity* m_pFirst; 		//0x0010
 };
 
 class CInterfaces

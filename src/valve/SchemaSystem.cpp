@@ -2,7 +2,7 @@
 
 bool SchemaSystem::Setup()
 {
-    std::uintptr_t uSchemaInterfaceAddress = g_Memory.PatterScan(SCHEMASYSTEM_DLL, X("48 8D 05 ? ? ? ? C3 CC CC CC CC CC CC CC CC 48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 4C 89 74 24 ?"), EPatternScanFlags::SCAN_RESOLVE_RIP, 0x3, 0x7);
+    std::uintptr_t uSchemaInterfaceAddress = g_Memory.PatterScan(SCHEMASYSTEM_DLL, X("48 89 05 ? ? ? ? 4C 8D 0D ? ? ? ? 33 C0 48 C7 05 ? ? ? ? ? ? ? ? 89 05"), EPatternScanFlags::SCAN_RESOLVE_RIP, 0x3, 0x7);
     std::uintptr_t uSchemaSystemScopeArrayPtr = 0U;
     if (!g_Memory.ReadMemoryRaw(uSchemaInterfaceAddress + CS_OFFSETOF(CSchemaSystem, m_pScopeArray), &uSchemaSystemScopeArrayPtr, sizeof(std::uintptr_t)))
     {
@@ -10,7 +10,7 @@ bool SchemaSystem::Setup()
         return false;
     }
   
-    int nScopeSize = g_Memory.ReadMemory<int>(uSchemaInterfaceAddress + CS_OFFSETOF(CSchemaSystem, m_uScopeSize));
+    int nScopeSize = g_Memory.ReadMemory<int>(uSchemaInterfaceAddress + CS_OFFSETOF(CSchemaSystem, m_nScopeSize));
     void** ppScopeArray = new void* [nScopeSize];
 
     if (!g_Memory.ReadMemoryRaw(uSchemaSystemScopeArrayPtr, ppScopeArray, (nScopeSize * sizeof(void*))))

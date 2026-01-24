@@ -124,7 +124,7 @@ public:
 
     std::string GetSchemaName()
     {
-        std::uintptr_t uSchemaNameAddress = g_Memory.ReadMemory(reinterpret_cast<std::uintptr_t>(this) + 0x10, { 0x8, 0x30, 0x8 });
+        std::uintptr_t uSchemaNameAddress = g_Memory.ReadMemory(reinterpret_cast<std::uintptr_t>(this) + 0x10, { 0x8, 0x78, 0x8 });
         if (uSchemaNameAddress == 0U)
             return {};
 

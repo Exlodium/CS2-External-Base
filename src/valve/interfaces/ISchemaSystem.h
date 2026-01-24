@@ -47,7 +47,7 @@ class CSchemaSystemTypeScope
 public:
 	MEM_PAD(0x8);
 	char m_szName[256];
-	MEM_PAD(0x338);
+	MEM_PAD(0x368);
 	std::uint16_t m_uNumDeclaredClasses;
 	MEM_PAD(0x6);
 	CSchemaDeclaredClassEntry* m_pDeclaredClasses;
@@ -56,7 +56,8 @@ public:
 class CSchemaSystem
 {
 public:
-	MEM_PAD(0x188);
-	std::uint64_t m_uScopeSize;
+	MEM_PAD(0x190);
+	int m_nScopeSize;
+	MEM_PAD(0x4);
 	CSchemaSystemTypeScope** m_pScopeArray;
 };
