@@ -16,7 +16,7 @@ public:
 	MEM_PAD(0x8);                   // 0x0040
 	int32_t m_nTickCount;           // 0x0048
 	MEM_PAD(0xC);                   // 0x004C
-	MEM_PAD(0x8);
+	MEM_PAD(0x8);                   // 0x0058
 	MEM_PAD(0x118);                 // 0x0060
 	uint64_t m_uMapName;			// 0x0178
 	uint64_t m_uMapNameShort;		// 0x0180
@@ -32,7 +32,7 @@ public:
 class CNetWorkGameClient
 {
 public:
-	MEM_PAD(0x230);
+	MEM_PAD(0x230);					// 0x0000
 	int m_nSignonState; 			// 0x0230
 };
 
@@ -40,8 +40,11 @@ class CEntityIdentity;
 class CGameEntitySystem
 {
 public:
-	MEM_PAD(0x210);
-	CEntityIdentity* m_pFirst; 		//0x0010
+	MEM_PAD(0x210);						// 0x0000
+	CEntityIdentity* m_pLast;			// 0x0210
+	CEntityIdentity* m_pLastInserted;	// 0x0218
+	CEntityIdentity* m_pFirst;			// 0x0220
+	int m_nEntities;					// 0x0228
 };
 
 class CInterfaces

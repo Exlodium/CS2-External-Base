@@ -7,22 +7,25 @@ public:
 	void* m_pType;
 	std::uint32_t m_uOffset;
 	std::uint32_t m_uMetadataSize;
-	void* m_nMetadata;
+	void* m_pMetadata;
 };
 
-class CSchemaClass
+struct SchemaClassInfoData_t
 {
-public:
 	MEM_PAD(0x8);
 	const char* m_szName;
-	const char* m_szModuleName;
-	std::uint32_t m_uSize;
-	std::uint16_t m_uNumFields;
+	const char* m_szProjectName;
+	const char* m_szCPPName;
+	int m_nSize;									
+	std::int16_t m_nFieldCount;						
+	std::int16_t m_nStaticMetadataCount;			
+	std::uint8_t m_uAlignment;						
+	std::uint8_t m_uBaseClassCount;					
+	std::int16_t m_nMultipleInheritanceDepth;		
+	std::int16_t m_nSingleInheritanceDepth;
 	MEM_PAD(0x2);
-	std::uint16_t m_uStaticSize;
-	std::uint16_t m_uMetadataSize;
-	MEM_PAD(0x4);
 	CSchemaField* m_pFields;
+	MEM_PAD(0x38);
 };
 
 class CSchemaDeclaredClass
@@ -32,7 +35,7 @@ public:
 	const char* m_szName;
 	const char* m_szModuleName;
 	const char* m_szUnknownStr;
-	CSchemaClass* m_Class;
+	SchemaClassInfoData_t* m_pClassInfoData;
 };
 
 class CSchemaDeclaredClassEntry

@@ -21,10 +21,10 @@ struct BoneData_t
         Vector4D vecRotation = Vector4D();
         Vector vecPosition = this->m_vecPosition;
 
-        vecRotation.x = this->m_qRotation.x; //rot.x
-        vecRotation.y = this->m_qRotation.y; //rot.y
-        vecRotation.z = this->m_qRotation.z; //rot.z
-        vecRotation.w = this->m_qRotation.w; //rot.w
+        vecRotation.x = this->m_qRotation.x;
+        vecRotation.y = this->m_qRotation.y;
+        vecRotation.z = this->m_qRotation.z;
+        vecRotation.w = this->m_qRotation.w;
 
         matrix[0][0] = 1.0f - 2.0f * vecRotation.y * vecRotation.y - 2.0f * vecRotation.z * vecRotation.z;
         matrix[1][0] = 2.0f * vecRotation.x * vecRotation.y + 2.0f * vecRotation.w * vecRotation.z;
@@ -124,7 +124,7 @@ public:
 
     std::string GetSchemaName()
     {
-        std::uintptr_t uSchemaNameAddress = g_Memory.ReadMemory(reinterpret_cast<std::uintptr_t>(this) + 0x10, { 0x8, 0x78, 0x8 });
+        std::uintptr_t uSchemaNameAddress = g_Memory.ReadMemory(reinterpret_cast<std::uintptr_t>(this) + 0x10, { 0x8, 0x50, 0x8 });
         if (uSchemaNameAddress == 0U)
             return {};
 
@@ -228,7 +228,7 @@ public:
 class CCSWeaponBaseVData : public CBasePlayerWeaponVData
 {
 public:
-    const std::string m_strName() noexcept
+    const std::string GetName() noexcept
     {
         std::string strBuffer = { };
         strBuffer.resize(32);
@@ -287,12 +287,6 @@ public:
 class C_CSWeaponBase : public C_BasePlayerWeapon
 {
 public:
-    [[nodiscard]] float GetInaccuracyMoveRebuilt(int nWeaponMode);
-    [[nodiscard]] float GetMaxSpeedRebuilt();
-    [[nodiscard]] float GetSpreadRebuilt();
-
-    [[nodiscard]] float GetInaccuracyRebuilt(float& flMoveInaccuracy, float& flAirInaccuracy);
-
     SCHEMA(float, m_flTurningInaccuracy, "C_CSWeaponBase->m_flTurningInaccuracy");
     SCHEMA(float, m_fAccuracyPenalty, "C_CSWeaponBase->m_fAccuracyPenalty");
 
@@ -331,17 +325,17 @@ public:
     SCHEMA(float, m_flFlashMaxAlpha, "C_CSPlayerPawnBase->m_flFlashMaxAlpha");
     SCHEMA(float, m_flFlashDuration, "C_CSPlayerPawnBase->m_flFlashDuration");
 
-    const std::string m_strActiveWeaponName() noexcept
+    const std::string GetActiveWeaponName() noexcept
     {
-        static std::uint32_t uOffset = SchemaSystem::m_mapSchemaOffsets[FNV1A::HashConst("C_CSPlayerPawn->m_pClippingWeapon")];
+		C_BasePlayerWeapon* pActiveWeapon = this->GetActiveWeapon();
+        if (!pActiveWeapon)
+			return {};
 
-        std::uintptr_t uWeaponNameAddress = 0U;
-        uWeaponNameAddress = g_Memory.ReadMemory(reinterpret_cast<std::uintptr_t>(this) + uOffset, { 0x10, 0x20 });
-        if (uWeaponNameAddress == 0U)
-            return {};
+		CCSWeaponBaseVData* pWeaponVData = pActiveWeapon->GetWeaponBaseVData();
+        if (!pWeaponVData)
+			return {};
 
-        std::string strWeaponName = g_Memory.ReadMemoryString(uWeaponNameAddress);
-
+        std::string strWeaponName = pWeaponVData->GetName();
         std::size_t uIndex = strWeaponName.find(X("_"));
         if (uIndex == std::string::npos || strWeaponName.empty())
             strWeaponName = {};
@@ -350,6 +344,19 @@ public:
 
         return strWeaponName;
     }
+
+    C_BasePlayerWeapon* GetActiveWeapon() noexcept
+    {
+		CCSPlayer_WeaponServices* pWeaponServices = this->m_pWeaponServices();
+        if (!pWeaponServices)
+			return nullptr;
+
+        CHandle<C_BasePlayerWeapon> hActiveWeapon = pWeaponServices->m_hActiveWeapon();
+        if (!hActiveWeapon.IsValid())
+            return nullptr;
+       
+        return hActiveWeapon.Get();
+	}
 };
 
 class C_CSPlayerPawn : public C_CSPlayerPawnBase
@@ -357,20 +364,21 @@ class C_CSPlayerPawn : public C_CSPlayerPawnBase
 public:
     const Vector GetEyePosition()
     {
-        return this->m_pGameSceneNode()->m_vecAbsOrigin() + this->m_vecViewOffset();
+		CGameSceneNode* pGameSceneNode = this->m_pGameSceneNode();
+        if (!pGameSceneNode)
+			return {};
+
+        return pGameSceneNode->m_vecAbsOrigin() + this->m_vecViewOffset();
     }
 
     SCHEMA(bool, m_bIsScoped, "C_CSPlayerPawn->m_bIsScoped");
     SCHEMA(bool, m_bIsWalking, "C_CSPlayerPawn->m_bIsWalking");
     SCHEMA(bool, m_bIsDefusing, "C_CSPlayerPawn->m_bIsDefusing");
+
     SCHEMA(int, m_ArmorValue, "C_CSPlayerPawn->m_ArmorValue");
     SCHEMA(int, m_iShotsFired, "C_CSPlayerPawn->m_iShotsFired");
 
-    SCHEMA(float, m_flEmitSoundTime, "C_CSPlayerPawn->m_flEmitSoundTime");
-
     SCHEMA(EntitySpottedState_t, m_entitySpottedState, "C_CSPlayerPawn->m_entitySpottedState");
-
-    SCHEMA(CUtlVectorSimple, m_aimPunchCache, "C_CSPlayerPawn->m_aimPunchCache");
 };
 
 class C_CSObserverPawn : public C_CSPlayerPawnBase
@@ -392,16 +400,16 @@ class CCSPlayerController : public CBasePlayerController
 public:
     const std::string m_strSanitizedPlayerName() noexcept
     {
-        std::string sBuffer = { };
-        sBuffer.resize(32);
+        std::string strBuffer{ };
+        strBuffer.resize(32);
 
         static std::uint32_t uOffset = SchemaSystem::m_mapSchemaOffsets[FNV1A::HashConst("CCSPlayerController->m_sSanitizedPlayerName")];
         DWORD64 SanitizedPlayerName = g_Memory.ReadMemory<DWORD64>((reinterpret_cast<DWORD64>(this) + uOffset));
         if (!SanitizedPlayerName)
             return { };
 
-        sBuffer = g_Memory.ReadMemoryString(SanitizedPlayerName);
-        return sBuffer;
+        strBuffer = g_Memory.ReadMemoryString(SanitizedPlayerName);
+        return strBuffer;
     }
 
     SCHEMA(CHandle<C_CSPlayerPawn>, m_hPlayerPawn, "CCSPlayerController->m_hPlayerPawn");

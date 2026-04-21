@@ -19,7 +19,7 @@ bool SchemaSystem::Setup()
         return false;
     }
 
-    for (std::uint16_t i = 0U; i <= nScopeSize; ++i)
+    for (int i = 0; i <= nScopeSize; ++i)
     {
         CSchemaSystemTypeScope schemaScope{};
         if (!g_Memory.ReadMemoryRaw(ppScopeArray[i], &schemaScope, sizeof(CSchemaSystemTypeScope)) || !schemaScope.m_pDeclaredClasses)
@@ -29,7 +29,7 @@ bool SchemaSystem::Setup()
         if (!g_Memory.ReadMemoryRaw(schemaScope.m_pDeclaredClasses, pDeclaredClassEntries, (schemaScope.m_uNumDeclaredClasses + 1U) * sizeof(CSchemaDeclaredClassEntry)))
             continue;
      
-        if (strcmp(schemaScope.m_szName, X("client.dll")) == 0)
+        if (std::strcmp(schemaScope.m_szName, X("client.dll")) == 0)
         {     
             for (std::uint16_t j = 0U; j < schemaScope.m_uNumDeclaredClasses; ++j)
             {
@@ -37,8 +37,8 @@ bool SchemaSystem::Setup()
                 if (!g_Memory.ReadMemoryRaw(pDeclaredClassEntries[j].m_pDeclaredClass, &declaredClass, sizeof(CSchemaDeclaredClass)))
                     continue;
 
-                CSchemaClass schemaClass{ };
-                if (!g_Memory.ReadMemoryRaw(declaredClass.m_Class, &schemaClass, sizeof(CSchemaClass)))
+                SchemaClassInfoData_t schemaClass{ };
+                if (!g_Memory.ReadMemoryRaw(declaredClass.m_pClassInfoData, &schemaClass, sizeof(SchemaClassInfoData_t)))
                     continue;
 
                 char szClassName[128]{};
@@ -48,7 +48,7 @@ bool SchemaSystem::Setup()
                 std::uintptr_t uClassFieldsPtr = reinterpret_cast<uintptr_t>(schemaClass.m_pFields);
                 if (uClassFieldsPtr)
                 {
-                    for (std::uint16_t k = 0; k < schemaClass.m_uNumFields; ++k)
+                    for (std::int16_t k = 0; k < schemaClass.m_nFieldCount; ++k)
                     {
                         CSchemaField schemaField = g_Memory.ReadMemory<CSchemaField>(uClassFieldsPtr + (sizeof(CSchemaField) * k));
                         if (!schemaField.m_pType)
@@ -67,6 +67,5 @@ bool SchemaSystem::Setup()
     }
 
     delete[] ppScopeArray;
-
 	return m_mapSchemaOffsets.size() > 0;
 }
