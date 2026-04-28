@@ -203,7 +203,7 @@ public:
 		return m_mapModules[uHash];
 	}
 
-	std::uintptr_t PatterScan(const char* szModuleName, const char* szSignature, uint16_t uFlags = NO_FLAGS, std::uint32_t uOption1 = 0U, std::uint32_t uOption2 = 0U)
+	std::uintptr_t PatternScan(const char* szModuleName, const char* szSignature, uint16_t uFlags = NO_FLAGS, std::uint32_t uOption1 = 0U, std::uint32_t uOption2 = 0U)
 	{
 		ModuleInformation_t moduleInformation = GetModule(szModuleName);
 
