@@ -1,6 +1,5 @@
 ﻿#include "../Includes.h"
 
-
 void Gui::Initialize(unsigned int uFontFlags)
 {
     // create fonts
@@ -19,7 +18,6 @@ void Gui::Initialize(unsigned int uFontFlags)
 
 void Gui::Update(ImGuiIO& io)
 {
-
     io.MouseDrawCursor = m_bOpen;
     if (m_bOpen)
     {
