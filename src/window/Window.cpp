@@ -145,6 +145,10 @@ static DWORD CreateUIAccessToken(PHANDLE phToken)
 }
 
 DWORD PrepareForUIAccess() {
+#ifdef _DEBUG
+    // in debug mode, uiaccess is bypassed to avoid restarting the process and to allow the use of performance profilers, etc.
+    return ERROR_SUCCESS;
+#else
     DWORD dwErr;
     HANDLE hTokenUIAccess;
     DWORD fUIAccess = 0;
@@ -177,6 +181,7 @@ DWORD PrepareForUIAccess() {
     }
 
     return dwErr;
+#endif
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -263,6 +268,7 @@ bool Window::Render()
 
         // overlay with vsync example
         // m_pSwapChain->Present(1U, 0U);
+        
         m_pSwapChain->Present(0U, DXGI_PRESENT_DO_NOT_WAIT);   
     }
 
